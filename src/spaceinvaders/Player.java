@@ -74,14 +74,8 @@ private int lives;
     }
     
     @Override 
-      public void tick(){
-
-          //Si se presiona space empieza el juego
-          if (game.isStart()){
-              if (game.isPausa() == false){
-        //Solo se mueve a la derecha o a la izquierda 
-        
-          if(game.getKeyManager().left){
+      public void tick(){ 
+        if(game.getKeyManager().left){
           setX(getX() - getSpeed());
           }
           
@@ -102,8 +96,8 @@ private int lives;
        //change size if collision with powerup
 
           }
-          }
-      }
+
+      
     
       //Se hacen dos rectangulos para cuando intesecte con un lado la direccion sea hacia la derecha y con el otro lado a la izquierda
       

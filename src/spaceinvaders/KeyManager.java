@@ -54,12 +54,11 @@ public class KeyManager implements KeyListener {
     down = keys[KeyEvent.VK_DOWN];
     left = keys[KeyEvent.VK_LEFT];
     right = keys[KeyEvent.VK_RIGHT];
-    space = keys[KeyEvent.VK_SPACE];
     pause=keys[KeyEvent.VK_P]; //tecla P para poner en pausa
     again = keys[KeyEvent.VK_R]; //Tecla R para restart
     save = keys[KeyEvent.VK_G]; //Tecla G para guardar juego
     load = keys[KeyEvent.VK_C]; //Tecla C para cargar juego
-    shoot=keys[KeyEvent.VK_X];
+    shoot=keys[KeyEvent.VK_SPACE];
     }
     
 }

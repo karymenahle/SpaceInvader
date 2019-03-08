@@ -70,16 +70,11 @@ public class Laser extends Item{
 
     @Override
     public void tick() {
-          //Si se presiona space empieza el juego
-          if (game.isStart()){
-              if (game.isPausa() == false){
-        //Solo se mueve a la derecha o a la izquierda 
-          
+
           
               setY(getY() - this.getSpeed());
         
-          
-          
+ 
          
           //reset x if colision
 // reset x position and y position if colision
@@ -93,8 +88,8 @@ public class Laser extends Item{
             game.setLasershoot(true);
       }
        
-          }
-          }
+          
+          
       }
 
     public boolean intersecta(Enemigo obj){

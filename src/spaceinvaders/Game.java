@@ -242,10 +242,7 @@ private int BricksAlive;// to know how many bricks still in the game
         if(getKeyManager().load){
             loadGame();
         }
-        //starting the game with spacebar
-        if(getKeyManager().space){
-            setStart(true);
-        }
+
         if (getKeyManager().pause && !isPausa()){
             state=(state == 1 ? 3:1);
             setPausa(true);
