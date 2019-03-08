@@ -32,6 +32,7 @@ private Player player; // to use a player
 private Bomb bomb;
 private Laser laser; //To use the ball
 private boolean start;//to start the game
+private boolean lasershoot;
 
 private LinkedList<Enemigo> enemigo;
 
@@ -63,6 +64,7 @@ private int BricksAlive;// to know how many bricks still in the game
         this.state = 0; //Se inicializa en 0 que significa que el juego todavia no empieza
         this.Win = 0; // se inicializa como 0 cuando inicia el juego porque todavia no destruye ningun brick
         this.TotalBricks = 0; //se inicializa como 0 y ya despues se asignan los bricks con un for
+        this.lasershoot=true;
     }
 
     /**
@@ -152,6 +154,14 @@ private int BricksAlive;// to know how many bricks still in the game
             return keyManager;
     }
 
+    public boolean isLasershoot() {
+        return lasershoot;
+    }
+
+    public void setLasershoot(boolean lasershoot) {
+        this.lasershoot = lasershoot;
+    }
+
     /**
      *
      * @return
@@ -205,13 +215,15 @@ private int BricksAlive;// to know how many bricks still in the game
         bomb = new Bomb(300,300,16,32,this);
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
+
         player = new Player(getWidth()/2-48, getHeight()-60, 1, 48,57 , this);
+
         //we add the ball on top of the player          
-        laser = new Laser(370, getHeight()-130, 1, 40, 40, this);
+        laser = new Laser(0, 0, 0, 0, 0, this);
         //we create a block matrix
         for(int j = 1; j <= 4; j++) {
             for (int i = 1; i <= 6; i++) {
-                 enemigo.add(new Enemigo(getWidth()-30 - 70*i ,5 + 60*j, 50, 50, this));  
+                 enemigo.add(new Enemigo(getWidth()-30 - 70*i ,5 + 60*j, 40, 40, this));  
                  setTotalBricks(getTotalBricks()+1);
             } 
         }
@@ -248,6 +260,7 @@ private int BricksAlive;// to know how many bricks still in the game
             if (player.intersecta(laser)){
                 laser.setDirection(2);
              }
+
               
              //we actualize the bricks for rendering
              for (int i = 0; i < enemigo.size(); i++) {
@@ -260,8 +273,18 @@ private int BricksAlive;// to know how many bricks still in the game
                     }
                 }
                if(marciano.intersecta(laser)){
-                  laser.oppositeDirection();
+
                   marciano.changeAlive();
+
+            
+            if (getKeyManager().shoot){
+                if(lasershoot){
+            laser = new Laser( player.getX()+25, player.getY()-10, 1, 20, 20, this);
+            setLasershoot(false);
+                }
+            }
+             
+
                   //actualize score
                   setScore(getScore() + 10);
                   setNum("Score: "+ getScore());
@@ -304,13 +327,13 @@ private int BricksAlive;// to know how many bricks still in the game
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
+
                     player.setX(320);
                     player.setY(getHeight()-100);
                     player.setLives(3);
                     player.setSpeed(4);
                     Assets.song.play();
                     setStart(false);
-                    laser.changeVisibility(true);
                     laser.setX(370); 
                     laser.setY(getHeight()-130);
                     laser.setSpeed(4);
@@ -366,7 +389,6 @@ private void render() {
         if (state == 5 ) { 
                g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
                Assets.song.stop();
-               laser.changeVisibility(false);
                setPausa(true);     
         }
         //graw score

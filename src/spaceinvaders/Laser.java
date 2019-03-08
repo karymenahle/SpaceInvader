@@ -23,24 +23,14 @@ public class Laser extends Item{
     private Game game;
     private int speed;
     private int direction;
-    private Animation skull; //la animacion de la pelota (esta girando)
-    private boolean bVisible; //
     
     public Laser(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
         this.width = width;
         this.height = height;
         this.game = game;
-        this.direction = 1;
-        this.speed = 4;
-        this.skull = new Animation(Assets.BallImages, 100); //se inicializa con la imagen principal 
-        this.bVisible = true;
-    }
-    public boolean isVisible(){
-        return bVisible;
-    }
-    public void changeVisibility(boolean b){
-        this.bVisible = b;
+        this.direction = 4;
+        this.speed = 15;
     }
 
     public int getSpeed() {
@@ -80,88 +70,33 @@ public class Laser extends Item{
 
     @Override
     public void tick() {
-        this.skull.tick();
+          //Si se presiona space empieza el juego
+          if (game.isStart()){
+              if (game.isPausa() == false){
+        //Solo se mueve a la derecha o a la izquierda 
+          
+          
+              setY(getY() - this.getSpeed());
         
-        if(game.isStart()){
-            if (game.isPausa()==false){
-        
-        //Este if sirve para asignar que la direccion 1 va en diagonal hacia arriba y la derecha
-       if (getDirection() == 1){
-       setX(getX() + getSpeed());
-       setY(getY() - getSpeed());
-       }
+          
+          
+         
+          //reset x if colision
+// reset x position and y position if colision
+ 
+        if (getY() + 80 >= game.getHeight()) {
+            setY(game.getHeight() - 80);
+            game.setLasershoot(true);
+        }
+        else if (getY() <= -20) {
+            setY(-20);
+            game.setLasershoot(true);
+      }
        
-       //Este if sirve para asignar que la direccion 2 va en diagonal hacia arriba y la izquierda
-       if (getDirection() == 2){
-       setX(getX() - getSpeed());
-       setY(getY() - getSpeed());
-       }
-       
-       //Este if sirve para asignar que la direccion 3 va hacia abajo y la derecha
-       if (getDirection() == 3){
-       setX(getX() + getSpeed());
-       setY(getY() + getSpeed());
-       }
-       
-       //Este if sirve para asignar que la direccion 4 va en diagonal hacia abajo y a la izquierda
-       if (getDirection() == 4){
-       setX(getX() - getSpeed());
-       setY(getY() + getSpeed());
-       }
-     
+          }
+          }
+      }
 
-       //sirve para saber si choca con una pared y tiene direccion 1 se cambie a 2
-       if(getX()+50 >= game.getWidth() && getDirection() == 1){
-       setDirection(2);
-       }
-       
-       //sirve para saber si choca con una pared y tiene direccion 2 se cambie a 1
-       else if(getX() <= 0  && getDirection() == 2){
-       setDirection(1);
-       }
-       
-       //sirve para saber si choca con una pared y tiene direccion 3 se cambie a 4
-       else if(getX()+50 >= game.getWidth() && getDirection() == 3){
-       setDirection(4);
-       }
-       
-       //sirve para saber si choca con una pared y tiene direccion 4 se cambie a 3
-       else if(getX() <= 0 && getDirection() == 4){
-       setDirection(3);
-       }
-       
-       //sirve para saber si choca con el techo y tiene direccion 1 se cambie a 3
-       if(getY() <= 0 && getDirection() == 1){
-       setDirection(3);
-       }
-       //sirve para saber si choca con el techo y tiene direccion 2 se cambie a 4
-       else if (getY() <= 0 && getDirection() == 2){
-       setDirection(4);
-       }
-       
-            }
-    }
-    }
-    
-    public void oppositeDirection(){
-              //sirve para saber si choca con una pared y tiene direccion 4 se cambie a 3
-       if(getDirection() == 4){
-       setDirection(3);
-       }
-       
-       //sirve para saber si choca con el techo y tiene direccion 1 se cambie a 3
-       if(getDirection() == 1){
-       setDirection(3);
-       }
-       //sirve para saber si choca con el techi y tiene direccion 2 se cambie a 4
-       if (getDirection() == 2){
-            setDirection(4);
-       }       
-       if (getDirection() == 3){
-       setDirection(4);
-       } 
-       
-    }
     public boolean intersecta(Enemigo obj){
      return obj instanceof Enemigo  && getPerimetro().intersects(((Enemigo) obj).getPerimetro());
      }
@@ -172,9 +107,8 @@ public class Laser extends Item{
             
     @Override
     public void render(Graphics g) {
-        if(isVisible()){
-          g.drawImage(skull.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);  
-        }
+            g.drawImage(Assets.laser, getX(), getY(), getWidth(), getHeight(), null);
+
         
     }
 }
