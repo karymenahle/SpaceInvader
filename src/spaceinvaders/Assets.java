@@ -15,13 +15,13 @@ public class Assets {
     
     public static BufferedImage background; // to store background image 
     public static BufferedImage player; // to store the player image
-    public static BufferedImage playerGrow; // to store the player image
     public static BufferedImage grow; //imagen del poder
     public static BufferedImage lives; //las imagenes de vidas
     public static BufferedImage pause; //variable de pausa
     public static BufferedImage gameover; //variable de que perdio
     public static BufferedImage win; //variable de que gano 
     public static SoundClip song; //cancion del juego
+    public static BufferedImage laser;
     
     public static BufferedImage BallImages[]; 
     public static BufferedImage ballSprites; // to store the sprites 
@@ -33,7 +33,6 @@ public class Assets {
 public static void init() {
 background = ImageLoader.loadImage("/Images/background.jpg"); //fondo del juego
 player = ImageLoader.loadImage("/Images/player.png"); //la van
-playerGrow = ImageLoader.loadImage("/Images/MegaVan.png"); //la van grande
 pause = ImageLoader.loadImage("/Images/pause.png"); //imagen que indica pausa
 gameover = ImageLoader.loadImage("/Images/GameO.jpg"); //imagen de gameover
 win = ImageLoader.loadImage("/Images/win.png");//imagen de Win
@@ -44,6 +43,7 @@ brickSprites = ImageLoader.loadImage("/Images/Meth.png"); //imagenes de bricks q
 SpriteSheet spritesheet = new SpriteSheet(brickSprites); //sprite de bricks
 ballSprites = ImageLoader.loadImage("/Images/SpriteBall.png");//imagenes de ball
 SpriteSheet ballspritesheet = new SpriteSheet(ballSprites);//sprite de ball
+laser = ImageLoader.loadImage("/Images/laser.png");
 
 //se corta la imagen de los sprites de los bricks
 BrickImages = new BufferedImage[5];       
