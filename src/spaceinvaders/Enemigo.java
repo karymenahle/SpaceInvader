@@ -156,4 +156,3 @@ public class Enemigo extends Item{
         g.drawImage(Meth.getBlockFrame(), getX(), getY(), getWidth(), getHeight(), null);   
     }
 }
-
