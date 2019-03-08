@@ -22,7 +22,6 @@ private int height;
 private Game game;
 private int speed;
 private int lives;
-private boolean bGrow; //booleana que sirve para identificar si esta la van pequeña o grande
 
     public Player(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -32,7 +31,6 @@ private boolean bGrow; //booleana que sirve para identificar si esta la van pequ
         this.game = game;
         this.speed = 6;
         this.lives = 3; //Se inicilializan las vidas como 3
-        this.bGrow = false;
     }
 
     public int getDirection() {
@@ -74,12 +72,7 @@ private boolean bGrow; //booleana que sirve para identificar si esta la van pequ
     public void setLives(int life){
         this.lives = life;
     }
-    public boolean isbGrow(){
-       return bGrow;
-    }
-    public void setbGrow(boolean b){
-        bGrow = b;
-    }
+ 
     
     @Override 
       public void tick(){
@@ -107,12 +100,6 @@ private boolean bGrow; //booleana que sirve para identificar si esta la van pequ
        setX(0); 
         }
        
-       //change size if collision with powerup
-       if(isbGrow()){
-           setWidth(200);
-       }else{
-           setWidth(150);
-       }
           }
           }
       }
@@ -121,32 +108,22 @@ private boolean bGrow; //booleana que sirve para identificar si esta la van pequ
       
       //primer rectangulo es del lado izquierdo 
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), getWidth()/2, getHeight());
+         return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
-       
-      //segundo rectangulo es del lado derecho 
-       public Rectangle getPerimetro2() {
-         return new Rectangle(getX()+getWidth()/2, getY(), getWidth()/2, getHeight());
-        }
+
        
        //intesecta con el lado izquierdo
        public boolean intersecta(Laser obj){
             return obj instanceof Laser  && getPerimetro().intersects(((Laser) obj).getPerimetro());
             }
-       //intersecta con el lado derecho
-       public boolean intersecta2(Laser obj){
-        return obj instanceof Laser  && getPerimetro2().intersects(((Laser) obj).getPerimetro());
-            }
+
 
        
     //To paint the item
      @Override 
     public void render(Graphics g){
-        if(bGrow){
-            g.drawImage(Assets.playerGrow, getX(), getY(), getWidth(), getHeight(), null);
-        }else{
             g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
-         }
+
         
         
         //draws player lives

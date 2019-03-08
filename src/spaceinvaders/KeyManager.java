@@ -22,6 +22,7 @@ public class KeyManager implements KeyListener {
     public boolean again; //para reiniciar el juego
     public boolean save; //para guardar el juego en un archivo 
     public boolean load; //para cargar el juego de un archivo
+    public boolean shoot;
     
     private boolean keys[]; //para guardar los movimientos
     
@@ -58,6 +59,7 @@ public class KeyManager implements KeyListener {
     again = keys[KeyEvent.VK_R]; //Tecla R para restart
     save = keys[KeyEvent.VK_G]; //Tecla G para guardar juego
     load = keys[KeyEvent.VK_C]; //Tecla C para cargar juego
+    shoot=keys[KeyEvent.VK_X];
     }
     
 }
