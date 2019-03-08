@@ -23,6 +23,7 @@ public class Laser extends Item{
     private Game game;
     private int speed;
     private int direction;
+    private boolean shooting;
     
     public Laser(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -31,8 +32,19 @@ public class Laser extends Item{
         this.game = game;
         this.direction = 4;
         this.speed = 15;
+        this.shooting = true;
     }
-
+    
+    public boolean isShooting(){
+        return shooting;
+    }
+    
+    public void canShoot(){
+        this.shooting = true;
+    }
+    public void cantShoot(){
+        this.shooting = false;
+    }    
     public int getSpeed() {
         return speed;
     }
@@ -67,6 +79,13 @@ public class Laser extends Item{
     public void setHeight(int height) {
         this.height = height;
     }
+    
+    public void destroy(){
+        setX(0);
+        setY(0);
+        setHeight(0);
+        setWidth(0);
+    }
 
     @Override
     public void tick() {
@@ -75,8 +94,12 @@ public class Laser extends Item{
               if (game.isPausa() == false){
         //Solo se mueve a la derecha o a la izquierda 
           
+                   
+                   setY(getY() - this.getSpeed()); 
+                
+              
           
-              setY(getY() - this.getSpeed());
+              
         
           
           
@@ -84,14 +107,11 @@ public class Laser extends Item{
           //reset x if colision
 // reset x position and y position if colision
  
-        if (getY() + 80 >= game.getHeight()) {
-            setY(game.getHeight() - 80);
-            game.setLasershoot(true);
+        if (getY() >= game.getHeight()) {
+     
+          //  game.setLasershoot(true);
+            canShoot();
         }
-        else if (getY() <= -20) {
-            setY(-20);
-            game.setLasershoot(true);
-      }
        
           }
           }
@@ -107,8 +127,6 @@ public class Laser extends Item{
             
     @Override
     public void render(Graphics g) {
-            g.drawImage(Assets.laser, getX(), getY(), getWidth(), getHeight(), null);
-
-        
+            g.drawImage(Assets.laser, getX(), getY(), getWidth(), getHeight(), null);      
     }
 }

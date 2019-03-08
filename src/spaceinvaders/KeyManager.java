@@ -50,12 +50,10 @@ public class KeyManager implements KeyListener {
     public void tick(){
         
        // to enable o disable every key 
-    up = keys[KeyEvent.VK_UP];
-    down = keys[KeyEvent.VK_DOWN];
     left = keys[KeyEvent.VK_LEFT];
     right = keys[KeyEvent.VK_RIGHT];
     space = keys[KeyEvent.VK_SPACE];
-    pause=keys[KeyEvent.VK_P]; //tecla P para poner en pausa
+    pause = keys[KeyEvent.VK_P]; //tecla P para poner en pausa
     again = keys[KeyEvent.VK_R]; //Tecla R para restart
     save = keys[KeyEvent.VK_G]; //Tecla G para guardar juego
     load = keys[KeyEvent.VK_C]; //Tecla C para cargar juego

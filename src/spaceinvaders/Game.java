@@ -257,9 +257,6 @@ private int BricksAlive;// to know how many bricks still in the game
             player.tick();
             laser.tick();
             bomb.tick();
-            if (player.intersecta(laser)){
-                laser.setDirection(2);
-             }
 
               
              //we actualize the bricks for rendering
@@ -273,25 +270,26 @@ private int BricksAlive;// to know how many bricks still in the game
                     }
                 }
                if(marciano.intersecta(laser)){
-
                   marciano.changeAlive();
-
-            
-            if (getKeyManager().shoot){
-                if(lasershoot){
-            laser = new Laser( player.getX()+25, player.getY()-10, 1, 20, 20, this);
-            setLasershoot(false);
-                }
-            }
-             
-
+                  laser.destroy();
+                  laser.canShoot();
                   //actualize score
                   setScore(getScore() + 10);
                   setNum("Score: "+ getScore());
-                }
-
              }
 
+             
+
+
+                }
+
+            if (getKeyManager().shoot && laser.isShooting()){
+            laser = new Laser( player.getX() + 11, player.getY()-10, 1, 20, 20, this);
+            laser.cantShoot();
+            }
+            if(laser.getY()<0){
+                laser.canShoot();
+            }
 
              //logic for when the player loses a live
              if(laser.getY() > getHeight() && player.getLives() > 0 ){
@@ -371,6 +369,7 @@ private void render() {
         g.drawImage(Assets.background, 0, 0, width, height, null); 
         player.render(g);//render the player
         bomb.render(g);
+        laser.render(g);
         //loopfor rendering all bricks
         for (int i = 0; i < enemigo.size(); i++) {
             Enemigo brickz =  enemigo.get(i);
