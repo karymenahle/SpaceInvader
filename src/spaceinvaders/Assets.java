@@ -31,8 +31,8 @@ public class Assets {
 /**
 * initializing the images of the game */
 public static void init() {
-background = ImageLoader.loadImage("/Images/desert.jpeg"); //fondo del juego
-player = ImageLoader.loadImage("/Images/Minivan.png"); //la van
+background = ImageLoader.loadImage("/Images/background.jpg"); //fondo del juego
+player = ImageLoader.loadImage("/Images/player.png"); //la van
 playerGrow = ImageLoader.loadImage("/Images/MegaVan.png"); //la van grande
 pause = ImageLoader.loadImage("/Images/pause.png"); //imagen que indica pausa
 gameover = ImageLoader.loadImage("/Images/GameO.jpg"); //imagen de gameover

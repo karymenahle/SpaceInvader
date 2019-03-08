@@ -207,7 +207,7 @@ private int BricksAlive;// to know how many bricks still in the game
         Assets.init(); 
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
-        player = new Player(320, getHeight()-100, 1, 150, 60, this);
+        player = new Player(320, getHeight()-100, 1, 75, 60, this);
         //we add the ball on top of the player          
         laser = new Laser(370, getHeight()-130, 1, 40, 40, this);
         //we create a block matrix
@@ -253,9 +253,7 @@ private int BricksAlive;// to know how many bricks still in the game
             if (player.intersecta(laser)){
                 laser.setDirection(2);
              }
-            if (player.intersecta2(laser)){
-                laser.setDirection(1);
-             }              
+             
              //we actualize the bricks for rendering
              for (int i = 0; i < enemigo.size(); i++) {
                Enemigo ladrillo =  enemigo.get(i);
@@ -263,7 +261,7 @@ private int BricksAlive;// to know how many bricks still in the game
                Poder erlenmeyer = poder.get(i);
                erlenmeyer.tick();
                 if(erlenmeyer.intersect(player)){
-                    player.setbGrow(true);
+
                     erlenmeyer.setY(1000);
                     setScore(getScore() + 30);
                     setNum("Score: "+ getScore());
@@ -325,7 +323,7 @@ private int BricksAlive;// to know how many bricks still in the game
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
-                    player.setbGrow(false);
+
                     player.setX(320);
                     player.setY(getHeight()-100);
                     player.setLives(3);
@@ -484,7 +482,7 @@ public void run() {
     fw.write(String.valueOf(player.getX())+ "\n");   
     fw.write(String.valueOf(player.getY())+ "\n");
     fw.write(String.valueOf(player.getLives())+ "\n");
-    fw.write(String.valueOf(player.isbGrow())+ "\n");
+
     
     fw.write(String.valueOf(getScore())+ "\n");
     
@@ -522,7 +520,7 @@ public void run() {
         player.setX(Integer.parseInt(br.readLine()));
         player.setY(Integer.parseInt(br.readLine()));
         player.setLives(Integer.parseInt(br.readLine()));
-        player.setbGrow(Boolean.parseBoolean(br.readLine()));
+
         
         setScore(Integer.parseInt(br.readLine()));
         
