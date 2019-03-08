@@ -72,7 +72,6 @@ private int lives;
     public void setLives(int life){
         this.lives = life;
     }
- 
     
     @Override 
       public void tick(){
@@ -100,6 +99,8 @@ private int lives;
        setX(0); 
         }
        
+       //change size if collision with powerup
+
           }
           }
       }
@@ -111,7 +112,6 @@ private int lives;
          return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
 
-       
        //intesecta con el lado izquierdo
        public boolean intersecta(Laser obj){
             return obj instanceof Laser  && getPerimetro().intersects(((Laser) obj).getPerimetro());
@@ -122,13 +122,14 @@ private int lives;
     //To paint the item
      @Override 
     public void render(Graphics g){
+
             g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
 
         
         
         //draws player lives
-        for(int i = 0; i < getLives();i++){
-            g.drawImage(Assets.lives, 15+35*i, game.getHeight()-40, 30, 30, null);
+        for(int i = 1; i < getLives()+1;i++){
+            g.drawImage(Assets.player, 0+35*i,10, 30, 30, null);
         }
     }
 

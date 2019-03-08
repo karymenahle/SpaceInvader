@@ -20,9 +20,9 @@ public class Enemigo extends Item{
     private int height;
     private Game game;
     private boolean alive;
-    private int index;
-    private Animation Meth;
-    private int prevY;
+    private Animation Alien;
+    private int direction;
+
 
     /**
      *
@@ -37,10 +37,17 @@ public class Enemigo extends Item{
         this.width = width;
         this.height = height;
         this.game = game;
-        this.index = 0;
-        this.Meth = new Animation(Assets.BrickImages, 100);
-        this.prevY = y;
+        this.Alien = new Animation(Assets.AlienImages, 100);
         this.alive = true;
+        this.direction = 1;
+    }
+    
+    public void setDirection(int dir){
+        this.direction = dir;
+    }
+    
+    public int getDirection(){
+        return direction;
     }
 
     /**
@@ -50,6 +57,10 @@ public class Enemigo extends Item{
     
     public boolean isAlive(){
         return alive;
+    }
+    
+    public void changeAlive(){
+        this.alive = !this.alive;
     }
 
     /**
@@ -83,52 +94,32 @@ public class Enemigo extends Item{
     public void setHeight(int height) {
         this.height = height;
     }
+    public void SwitchLayer(){
+        setY(getY()+getHeight());
+        setDirection(getDirection()*-1);
+    }
 
     /**
      *
      */
     @Override
     public void tick() {
-        this.Meth.tick();
-        Meth.setStaticIndex(getIndex());
+        this.Alien.tick();
+        if(isAlive()){
+          setX(getX()+getDirection());  
+        }
+        
+
+        if(!isAlive()){
+            setWidth(0);
+            setHeight(0);
+        }
+        
     }
     
-    /**
-     *
-     * @return
-     */
-    public int getPreY(){
-        return prevY;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getIndex(){
-        return index;
-    }  
-
-    /**
-     *
-     * @param index
-     */
-    public void setIndex(int index){
-        this.index = index;
-    }
-    /**
-     * esta funcion va a llamar a la clase animation para avanzar al 
-     * siguiente tipo de bloque 
-     */
-    public void nextBrick(){
-       setIndex(getIndex()+1);
-       if(getIndex()>= 4){
-           setY(-1000);
-           alive = false;
-       }
+ 
        //actualiza nuestra animacion de bloque
-       Meth.setStaticIndex(getIndex());
-    }
+    
 
     /**
      *
@@ -153,6 +144,6 @@ public class Enemigo extends Item{
      */
     @Override
     public void render(Graphics g) { 
-        g.drawImage(Meth.getBlockFrame(), getX(), getY(), getWidth(), getHeight(), null);   
+        g.drawImage(Alien.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);   
     }
 }
