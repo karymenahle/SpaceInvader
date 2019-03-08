@@ -17,7 +17,7 @@ public class SpaceInvaders {
      */
     public static void main(String[] args) {
         // creating a Game object
-Game g = new Game("Juego", 800, 500); // initializing the game
+Game g = new Game("Juego", 600, 700); // initializing the game
 g.start(); 
     }
     

@@ -29,15 +29,13 @@ private Thread thread;
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
-
+private Bomb bomb;
 private Laser laser; //To use the ball
 private boolean start;//to start the game
 
-private LinkedList<Poder> poder;//to use powers
 private LinkedList<Enemigo> enemigo;
 
 private KeyManager keyManager; //to manage the keyboard
-private boolean PowerUp;
 private int score; // puntaje
 private String num; //to display score
 private boolean pausa;//to pause the game
@@ -57,8 +55,7 @@ private int BricksAlive;// to know how many bricks still in the game
         this.height = height;
         keyManager = new KeyManager();
         enemigo = new LinkedList<Enemigo>(); //lista que despliega los bricks
-        poder = new LinkedList<Poder>(); //lista que despliega los poderes del juego
-        this.PowerUp = false;
+        
         this.start = false;//we initialize the game as false meaning it wont start
         score = 0; //puntaje es 0 cuando inicia el juego
         num = "Score:"+score; //string que despliega en la pantalla el puntaje
@@ -205,16 +202,16 @@ private int BricksAlive;// to know how many bricks still in the game
         display = new Display(title, getWidth(), getHeight());
         //we add our assets from our Assets class
         Assets.init(); 
+        bomb = new Bomb(300,300,16,32,this);
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
-        player = new Player(320, getHeight()-100, 1, 150, 60, this);
+        player = new Player(getWidth()/2-48, getHeight()-60, 1, 48,57 , this);
         //we add the ball on top of the player          
         laser = new Laser(370, getHeight()-130, 1, 40, 40, this);
         //we create a block matrix
-        for(int j = 1; j <= 3; j++) {
-            for (int i = 1; i <= 7; i++) {
-                 enemigo.add(new Enemigo(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
-                 poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
+        for(int j = 1; j <= 4; j++) {
+            for (int i = 1; i <= 6; i++) {
+                 enemigo.add(new Enemigo(getWidth()-30 - 70*i ,5 + 60*j, 50, 50, this));  
                  setTotalBricks(getTotalBricks()+1);
             } 
         }
@@ -223,17 +220,14 @@ private int BricksAlive;// to know how many bricks still in the game
 
     private void tick() {
         keyManager.tick();
-        
         //para guardar el juego se tiene que oprimir la letra "G"
         if(getKeyManager().save){
             saveGame();
         }
-        
         //Para cargar el juego guardado se tiene que oprimir la letra "C"
         if(getKeyManager().load){
             loadGame();
         }
-        
         //starting the game with spacebar
         if(getKeyManager().space){
             setStart(true);
@@ -250,38 +244,24 @@ private int BricksAlive;// to know how many bricks still in the game
             //advancing player with colition
             player.tick();
             laser.tick();
+            bomb.tick();
             if (player.intersecta(laser)){
                 laser.setDirection(2);
              }
-            if (player.intersecta2(laser)){
-                laser.setDirection(1);
-             }              
+              
              //we actualize the bricks for rendering
              for (int i = 0; i < enemigo.size(); i++) {
-               Enemigo ladrillo =  enemigo.get(i);
-               ladrillo.tick();
-               Poder erlenmeyer = poder.get(i);
-               erlenmeyer.tick();
-                if(erlenmeyer.intersect(player)){
-                    player.setbGrow(true);
-                    erlenmeyer.setY(1000);
-                    setScore(getScore() + 30);
-                    setNum("Score: "+ getScore());
-                }
-               if(ladrillo.intersecta(laser)){
-                  ladrillo.nextBrick();
-                  laser.oppositeDirection();
-                  int iNum = (int) (Math.random() * 10);
-                  if(ladrillo.getY() < 0 ){
-                      setWin(getWin()+1);
-                      if(iNum > 5){
-                            //we set the powerup in position and drop the power up
-                            erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
-                            erlenmeyer.setY(ladrillo.getPreY() );
-                            //erlenmeyer.isDropping();
-                            laser.setSpeed(laser.getSpeed()+1);
-                        }
+               Enemigo marciano =  enemigo.get(i);
+               marciano.tick();
+               if(marciano.getX()>getWidth()-marciano.getWidth() || marciano.getX()<-2){
+                    for(int j = 0; j < enemigo.size(); j++){
+                        Enemigo alien = enemigo.get(j);
+                        alien.SwitchLayer();
                     }
+                }
+               if(marciano.intersecta(laser)){
+                  laser.oppositeDirection();
+                  marciano.changeAlive();
                   //actualize score
                   setScore(getScore() + 10);
                   setNum("Score: "+ getScore());
@@ -306,7 +286,6 @@ private int BricksAlive;// to know how many bricks still in the game
                  state = 5;
                  player.setSpeed(0);
                  laser.setSpeed(0);
-                // bricks.clear();
                 
              }
              //sets our win condition
@@ -325,7 +304,6 @@ private int BricksAlive;// to know how many bricks still in the game
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
-                    player.setbGrow(false);
                     player.setX(320);
                     player.setY(getHeight()-100);
                     player.setLives(3);
@@ -339,8 +317,7 @@ private int BricksAlive;// to know how many bricks still in the game
                     //Se vuelve a desplegar la matriz de bricks
                    for(int j = 1; j <= 3; j++) {
                        for (int i = 1; i <= 7; i++) {
-                            enemigo.add(new Enemigo(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
-                            poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
+                            enemigo.add(new Enemigo(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));   
                            setTotalBricks(getTotalBricks()+1);
                        } 
                    }
@@ -370,16 +347,11 @@ private void render() {
         Graphics g = bs.getDrawGraphics();
         g.drawImage(Assets.background, 0, 0, width, height, null); 
         player.render(g);//render the player
-
+        bomb.render(g);
         //loopfor rendering all bricks
         for (int i = 0; i < enemigo.size(); i++) {
             Enemigo brickz =  enemigo.get(i);
             brickz.render(g);
-        }
-        //we render powerups
-        for(int i = 0; i < poder.size();i++ ){
-            Poder GreenErlenmeyer =  poder.get(i);
-            GreenErlenmeyer.render(g);
         }
         //pause case
         if (state == 3) {
@@ -470,7 +442,6 @@ public void run() {
         catch (InterruptedException ie) {
             ie.printStackTrace(); 
            }
-
     } 
 
       
@@ -484,7 +455,7 @@ public void run() {
     fw.write(String.valueOf(player.getX())+ "\n");   
     fw.write(String.valueOf(player.getY())+ "\n");
     fw.write(String.valueOf(player.getLives())+ "\n");
-    fw.write(String.valueOf(player.isbGrow())+ "\n");
+
     
     fw.write(String.valueOf(getScore())+ "\n");
     
@@ -499,7 +470,6 @@ public void run() {
                  Enemigo ladrillo =  enemigo.get(i);
                      fw.write(String.valueOf(ladrillo.getX())+"\n");
                      fw.write(String.valueOf(ladrillo.getY())+"\n");
-                     fw.write(String.valueOf(ladrillo.getIndex()+"\n"));
             }
 
     //Se cierra el archivo
@@ -522,7 +492,7 @@ public void run() {
         player.setX(Integer.parseInt(br.readLine()));
         player.setY(Integer.parseInt(br.readLine()));
         player.setLives(Integer.parseInt(br.readLine()));
-        player.setbGrow(Boolean.parseBoolean(br.readLine()));
+
         
         setScore(Integer.parseInt(br.readLine()));
         
@@ -539,7 +509,6 @@ public void run() {
                  Enemigo ladrillo =  enemigo.get(i);
                      ladrillo.setX(Integer.parseInt(br.readLine()));
                      ladrillo.setY(Integer.parseInt(br.readLine()));
-                     ladrillo.setIndex(Integer.parseInt(br.readLine()));
             }
         br.close();
         }
