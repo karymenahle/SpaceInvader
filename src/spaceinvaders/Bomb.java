@@ -70,14 +70,9 @@ public class Bomb extends Item{
     @Override
     public void tick() {
         this.bomba.tick();
-        
-        if(game.isStart()){
-            if (game.isPausa()==false){
-        
+
                 setY(getY()+getSpeed());
-       
-            }
-    }
+    
     }
     
     public boolean intersecta(Player obj){
