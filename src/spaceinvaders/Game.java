@@ -31,7 +31,6 @@ private int direction; // to set the direction of the player
 private Player player; // to use a player
 private LinkedList<Bomb> bomb;
 private Laser laser; //To use the ball
-private boolean start;//to start the game
 private boolean lasershoot;
 private LinkedList<Enemigo> enemigo;
 
@@ -42,7 +41,6 @@ private boolean pausa;//to pause the game
 private int state; //to know if 1=running 2= endgame 3= pause 4= win 5=gameover
 private int TotalAlien;//to keep track of total bricks
 private int Win;//to keep score of destroyed bricks
-private int BricksAlive;// to know how many bricks still in the game
     /**
      *
      * @param title
@@ -56,7 +54,6 @@ private int BricksAlive;// to know how many bricks still in the game
         keyManager = new KeyManager();
         enemigo = new LinkedList<Enemigo>(); //lista que despliega los bricks
         bomb = new LinkedList<Bomb>();
-        this.start = false;//we initialize the game as false meaning it wont start
         score = 0; //puntaje es 0 cuando inicia el juego
         num = "Score:"+score; //string que despliega en la pantalla el puntaje
         this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
@@ -159,21 +156,10 @@ private int BricksAlive;// to know how many bricks still in the game
         this.lasershoot = lasershoot;
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean isStart() {
-        return start;
+    public void setState(int state) {
+        this.state = state;
     }
 
-    /**
-     *
-     * @param start
-     */
-    public void setStart(boolean start) {
-        this.start = start;
-    }
     
     /**
      *
@@ -210,8 +196,10 @@ private int BricksAlive;// to know how many bricks still in the game
         //we add our assets from our Assets class
         Assets.init(); 
 
-           
-        
+        //Para cargar el juego guardado se tiene que oprimir la letra "C"
+        if(getKeyManager().load && state==1){
+            loadGame();
+        }
         
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
@@ -241,10 +229,7 @@ private int BricksAlive;// to know how many bricks still in the game
         if(getKeyManager().load && state==1){
             loadGame();
         }
-        //starting the game with spacebar
-        if(getKeyManager().space){
-            setStart(true);
-        }
+
         if (getKeyManager().pause && !isPausa()){
             state=(state == 1 ? 3:1);
             setPausa(true);
@@ -252,8 +237,9 @@ private int BricksAlive;// to know how many bricks still in the game
         else if (!getKeyManager().pause){
             setPausa(false);
         }
+        
         //pause logic
-       if (state !=3 && isStart()){
+       if (state !=3){
             //advancing player with colition
             player.tick();
             laser.tick();         
@@ -286,7 +272,6 @@ private int BricksAlive;// to know how many bricks still in the game
                     player.loseLife();
                     setScore(getScore() - 50);
                     setNum("Score: "+ getScore());
-                    setStart(false);
                     player.setX(320);
                     laser.setX(370);
                     laser.setY(-100); 
@@ -309,7 +294,6 @@ private int BricksAlive;// to know how many bricks still in the game
                    player.loseLife();
                    setScore(getScore() - 50);
                    setNum("Score: "+ getScore());
-                   setStart(false);
                    beam.setActive(false);
                    player.setX(320);
                    laser.setY(-100);
@@ -340,14 +324,13 @@ private int BricksAlive;// to know how many bricks still in the game
                  player.loseLife();
                  setScore(getScore() - 50);
                  setNum("Score: "+ getScore());
-                 setStart(false);
                  player.setX(320);
                  laser.setX(370);
                  laser.setY(player.getY() - 40); 
              }
              //sets our lose ocndition
              else if (player.getLives() == 0){ 
-                 state = 5;
+                 state=5;
                  player.setSpeed(0);
                  laser.cantShoot();
                 
@@ -364,7 +347,7 @@ private int BricksAlive;// to know how many bricks still in the game
                 if(state == 4 || state == 5){//if win or game over
 
                     state = 1;
-                   
+
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
@@ -374,17 +357,17 @@ private int BricksAlive;// to know how many bricks still in the game
                     player.setLives(3);
                     player.setSpeed(4);
                     Assets.song.play();
-                    setStart(false);
-                    laser.setX(370); 
-                    laser.setY(getHeight()-130);
-                    laser.setSpeed(4);
-                    //Se vuelve a desplegar la matriz de bricks
-                   for(int j = 1; j <= 3; j++) {
-                       for (int i = 1; i <= 7; i++) {
-                            enemigo.add(new Enemigo(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));   
-                           setTotalAlien(getTotalAlien()+1);
-                       } 
-                   }
+                    laser.setX(0); 
+                    laser.setY(0);
+                    //Se vuelve a desplegar la matriz de bricksfor(int j = 1; j <= 4; j++) {
+                  for(int j = 1; j <= 4; j++) {
+                for (int i = 1; i <= 6; i++) {
+                 enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
+                 setTotalAlien(getTotalAlien()+1);
+                 bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
+            } 
+        }
+        
                    //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
                    saveGame();
                    
@@ -439,8 +422,9 @@ private void render() {
         if (state == 5 ) { 
                g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
                Assets.song.stop();
-               setPausa(true);     
+               setPausa(true);  
         }
+        
         //draw score
         g.setColor(Color.WHITE);
         g.drawString(num, 700, 20);
@@ -541,9 +525,17 @@ public void run() {
     fw.write(String.valueOf(getWin())+"\n");
 
             for(int i = 0; i < enemigo.size(); i++){
-                 Enemigo ladrillo =  enemigo.get(i);
-                     fw.write(String.valueOf(ladrillo.getX())+"\n");
-                     fw.write(String.valueOf(ladrillo.getY())+"\n");
+                 Enemigo marciano =  enemigo.get(i);
+                 Bomb beam = bomb.get(i);
+                     fw.write(String.valueOf(marciano.getX())+"\n");
+                     fw.write(String.valueOf(marciano.getY())+"\n");
+                     fw.write(String.valueOf(marciano.isShowpoints())+"\n");
+                     fw.write(String.valueOf(marciano.isAlive())+"\n");
+                     
+                     fw.write(String.valueOf(beam.getX())+"\n");
+                     fw.write(String.valueOf(beam.getY())+"\n");
+  
+                    
             }
 
     //Se cierra el archivo
@@ -580,9 +572,16 @@ public void run() {
         
         //Bricks
             for(int i = 0; i < enemigo.size(); i++){
-                 Enemigo ladrillo =  enemigo.get(i);
-                     ladrillo.setX(Integer.parseInt(br.readLine()));
-                     ladrillo.setY(Integer.parseInt(br.readLine()));
+                 Enemigo marciano =  enemigo.get(i);
+                 Bomb beam = bomb.get(i);
+                     marciano.setX(Integer.parseInt(br.readLine()));
+                     marciano.setY(Integer.parseInt(br.readLine()));
+                     marciano.setShowpoints(Boolean.parseBoolean(br.readLine()));
+                     marciano.setAlive(Boolean.parseBoolean(br.readLine()));
+                     
+                     beam.setY(Integer.parseInt(br.readLine()));
+                     beam.setY(Integer.parseInt(br.readLine()));
+ 
             }
         br.close();
         }
