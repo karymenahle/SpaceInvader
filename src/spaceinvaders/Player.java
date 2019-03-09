@@ -80,9 +80,8 @@ private int lives;
     @Override 
       public void tick(){
 
-          //Si se presiona space empieza el juego
-          if (game.isStart()){
-              if (!game.isPausa()){
+          //Si se presiona enter empieza el juego
+                if (!game.isPausa()){
         //Solo se mueve a la derecha o a la izquierda 
         
           if(game.getKeyManager().left){
@@ -103,7 +102,7 @@ private int lives;
        setX(0); 
         }
        
-          }
+                
           }
       }
     
@@ -113,11 +112,6 @@ private int lives;
        public Rectangle getPerimetro() {
          return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
-
-       //intesecta con el lado izquierdo
-      // public boolean intersecta(Enemigo obj){
-        //    return obj instanceof Enemigo  && getPerimetro().intersects(((Enemigo) obj).getPerimetro());
-        //    }
 
        
     //To paint the item
