@@ -31,7 +31,7 @@ public class Laser extends Item{
         this.height = height;
         this.game = game;
         this.direction = 4;
-        this.speed = 6;
+        this.speed = 15;
         this.shooting = true;
     }
     
@@ -88,7 +88,7 @@ public class Laser extends Item{
     @Override
     public void tick() {
           //Si se presiona space empieza el juego
-          if (game.isStart()){
+          
               if (game.isPausa() == false){
         //Solo se mueve a la derecha o a la izquierda 
           
@@ -112,7 +112,7 @@ public class Laser extends Item{
         }
        
           }
-          }
+          
       }
 
     public boolean intersecta(Enemigo obj){
