@@ -9,6 +9,9 @@ package spaceinvaders;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,8 +21,11 @@ public class Enemigo extends Item{
 
     private int width;
     private int height;
+    private int initialX;
+    private int initialY;
     private Game game;
     private boolean alive;
+    private boolean showpoints;
     private Animation Alien;
     private int direction;
 
@@ -39,15 +45,24 @@ public class Enemigo extends Item{
         this.game = game;
         this.Alien = new Animation(Assets.AlienImages, 100);
         this.alive = true;
-        this.direction = 1;
+        this.direction = 2;
+        this.initialX = x;
+        this.initialY = y;
+        this.showpoints = false;
     }
-    
+    public void reset(){
+        setX(initialX);
+        setY(initialY);
+    }
     public void setDirection(int dir){
         this.direction = dir;
     }
     
     public int getDirection(){
         return direction;
+    }
+    public void showScore(){
+        this.showpoints=true;
     }
 
     /**
@@ -121,6 +136,11 @@ public class Enemigo extends Item{
         
     }
     
+
+    
+
+
+    
  
        //actualiza nuestra animacion de bloque
     
@@ -141,6 +161,9 @@ public class Enemigo extends Item{
     public boolean intersecta(Laser obj){
         return obj instanceof Laser  && getPerimetro().intersects(((Laser) obj).getPerimetro());
      }
+    public boolean intersect (Player obj){
+        return obj instanceof Player && getPerimetro().intersects(((Player)obj).getPerimetro());
+    }
        
     /**
      *
@@ -148,7 +171,11 @@ public class Enemigo extends Item{
      */
     @Override
     public void render(Graphics g) { 
-        g.drawImage(Alien.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);   
+        
+
+           g.drawImage(Alien.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);  
+        
+        
     }
 }
 

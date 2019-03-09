@@ -29,7 +29,7 @@ private Thread thread;
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
-private Bomb bomb;
+private LinkedList<Bomb> bomb;
 private Laser laser; //To use the ball
 private boolean start;//to start the game
 private boolean lasershoot;
@@ -56,7 +56,7 @@ private int BricksAlive;// to know how many bricks still in the game
         this.height = height;
         keyManager = new KeyManager();
         enemigo = new LinkedList<Enemigo>(); //lista que despliega los bricks
-        
+        bomb = new LinkedList<Bomb>();
         this.start = false;//we initialize the game as false meaning it wont start
         score = 0; //puntaje es 0 cuando inicia el juego
         num = "Score:"+score; //string que despliega en la pantalla el puntaje
@@ -210,7 +210,10 @@ private int BricksAlive;// to know how many bricks still in the game
         display = new Display(title, getWidth(), getHeight());
         //we add our assets from our Assets class
         Assets.init(); 
-        bomb = new Bomb(300,300,16,32,this);
+
+           
+        
+        
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
 
@@ -221,8 +224,9 @@ private int BricksAlive;// to know how many bricks still in the game
         //we create an alien matrix
         for(int j = 1; j <= 4; j++) {
             for (int i = 1; i <= 6; i++) {
-                 enemigo.add(new Enemigo(getWidth()-30 - 70*i ,5 + 60*j, 40, 40, this));  
+                 enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
                  setTotalAlien(getTotalAlien()+1);
+                 bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
             } 
         }
         display.getJframe().addKeyListener(keyManager);
@@ -250,17 +254,18 @@ private int BricksAlive;// to know how many bricks still in the game
             setPausa(false);
         }
         //pause logic
-       if (state !=3){
+       if (state !=3 && isStart()){
             //advancing player with colition
             player.tick();
-            laser.tick();
-            bomb.tick();
+            laser.tick();         
 
               
              //we actualize the bricks for rendering
              for (int i = 0; i < enemigo.size(); i++) {
                Enemigo marciano =  enemigo.get(i);
                marciano.tick();
+               Bomb beam = bomb.get(i);
+               beam.tick();
                if(marciano.getX()>getWidth()-marciano.getWidth() || marciano.getX()<-2){
                     for(int j = 0; j < enemigo.size(); j++){
                         Enemigo alien = enemigo.get(j);
@@ -268,7 +273,8 @@ private int BricksAlive;// to know how many bricks still in the game
                     }
                 }
                if(marciano.intersecta(laser)){
-                  marciano.changeAlive();
+                  Assets.alienExplosion.play();
+                  marciano.changeAlive(); 
                   laser.destroy();
                   laser.canShoot();
                   setWin(getWin()+1);
@@ -276,14 +282,52 @@ private int BricksAlive;// to know how many bricks still in the game
                   setScore(getScore() + 10);
                   setNum("Score: "+ getScore());
              }
-
+               if(marciano.intersect(player)){
+                   Assets.deadPlayer.play();
+                    player.loseLife();
+                    setScore(getScore() - 50);
+                    setNum("Score: "+ getScore());
+                    setStart(false);
+                    player.setX(320);
+                    laser.setX(370);
+                    laser.setY(player.getY() - 40); 
+                    for(int k = 0; k <enemigo.size();k++){
+                        Enemigo xenomorph = enemigo.get(k);
+                        xenomorph.reset();
+                        Bomb granada = bomb.get(k);
+                        granada.setY(getHeight()+100);
+                    }
+             }
+               int iNum = (int) (Math.random() * 1000);
+               if(iNum > 998 && marciano.isAlive()){
+                   Assets.alienBeam.play();
+                   beam.setX(marciano.getX());
+                   beam.setY(marciano.getY());
+               }
+               if(beam.intersecta(player)){
+                   Assets.deadPlayer.play();
+                   player.loseLife();
+                   setScore(getScore() - 50);
+                   setNum("Score: "+ getScore());
+                   setStart(false);
+                   player.setX(320);
+                   laser.setX(370);
+                   laser.setY(player.getY() - 40); 
+                   for(int k = 0; k <enemigo.size();k++){
+                        Enemigo xenomorph = enemigo.get(k);
+                        xenomorph.reset();
+                        Bomb granada = bomb.get(k);
+                        granada.setY(getHeight()+100);
+                   }
+               }
              
 
 
                 }
 
             if (getKeyManager().shoot && laser.isShooting()){
-            laser = new Laser( player.getX() + 11, player.getY()-10, 1, 20, 20, this);
+                Assets.laserSound.play();
+            laser = new Laser( player.getX() + 11, player.getY()-10, 1, 10, 10, this);
             laser.cantShoot();
             }
             if(laser.getY()<0){
@@ -291,6 +335,7 @@ private int BricksAlive;// to know how many bricks still in the game
             }
 
              //logic for when the player loses a live
+
              if(laser.getY() > getHeight() && player.getLives() > 0 ){
                  player.loseLife();
                  setScore(getScore() - 50);
@@ -366,12 +411,14 @@ private void render() {
         Graphics g = bs.getDrawGraphics();
         g.drawImage(Assets.background, 0, 0, width, height, null); 
         player.render(g);//render the player
-        bomb.render(g);
+        
         laser.render(g);
         //loopfor rendering all bricks
         for (int i = 0; i < enemigo.size(); i++) {
-            Enemigo brickz =  enemigo.get(i);
-            brickz.render(g);
+            Enemigo ET =  enemigo.get(i);
+            ET.render(g);
+            Bomb boom=bomb.get(i);
+            boom.render(g);
         }
         //pause case
         if (state == 3) {

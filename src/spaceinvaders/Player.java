@@ -115,9 +115,9 @@ private int lives;
         }
 
        //intesecta con el lado izquierdo
-       public boolean intersecta(Laser obj){
-            return obj instanceof Laser  && getPerimetro().intersects(((Laser) obj).getPerimetro());
-            }
+      // public boolean intersecta(Enemigo obj){
+        //    return obj instanceof Enemigo  && getPerimetro().intersects(((Enemigo) obj).getPerimetro());
+        //    }
 
        
     //To paint the item

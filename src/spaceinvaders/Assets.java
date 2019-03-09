@@ -19,6 +19,10 @@ public class Assets {
     public static BufferedImage gameover; //variable de que perdio
     public static BufferedImage win; //variable de que gano 
     public static SoundClip song; //cancion del juego
+    public static SoundClip laserSound;
+    public static SoundClip alienExplosion;
+    public static SoundClip deadPlayer;
+    public static SoundClip alienBeam;
     public static BufferedImage laser;
     
     public static BufferedImage BallImages[]; 
@@ -41,8 +45,10 @@ song = new SoundClip("/sounds/zeddZelda.wav", -3f,true); //cancion del juego
 ballSprites = ImageLoader.loadImage("/Images/SpriteBall.png");//imagenes de ball
 SpriteSheet ballspritesheet = new SpriteSheet(ballSprites);//sprite de ball
 laser = ImageLoader.loadImage("/Images/laser.png");
-
-
+laserSound = new SoundClip("/sounds/bulletSound.wav",-3f,false);
+alienExplosion = new SoundClip("/sounds/damageSound.wav",-3f,false);
+deadPlayer = new SoundClip("/sounds/deathSound.wav",-3f,false);
+alienBeam = new SoundClip("/sounds/alienBeam.wav",-3f,false);
     alienSprites = ImageLoader.loadImage("/Images/SpaceInvaders.png");
     SpriteSheet alienSpriteSheet = new SpriteSheet(alienSprites);
 

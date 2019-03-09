@@ -109,6 +109,7 @@ public class Animation {
             index = 0; //se actualiza index 
         }
     }
+    
     if (nxtblock){
         staticIndex++;
         isNxtBlock(!nxtblock);
