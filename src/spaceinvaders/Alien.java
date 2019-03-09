@@ -13,6 +13,7 @@ import java.awt.Graphics;
  */
 public class Alien extends Item{
     
+    private Game game;
     boolean moveRight;
     boolean moveLeft;
     boolean isVisible;
@@ -26,12 +27,14 @@ public class Alien extends Item{
 
     @Override
     public void tick() {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if (!game.isPausa()){
+      }
+      
     }
 
     @Override
     public void render(Graphics g) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
     }
     
     
