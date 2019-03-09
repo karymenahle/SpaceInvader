@@ -29,10 +29,10 @@ private Thread thread;
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
-private Bomb bomb;
+private LinkedList<Bomb> bomb;
 private Laser laser; //To use the ball
 private boolean start;//to start the game
-
+private boolean lasershoot;
 private LinkedList<Enemigo> enemigo;
 
 private KeyManager keyManager; //to manage the keyboard
@@ -40,7 +40,7 @@ private int score; // puntaje
 private String num; //to display score
 private boolean pausa;//to pause the game
 private int state; //to know if 1=running 2= endgame 3= pause 4= win 5=gameover
-private int TotalBricks;//to keep track of total bricks
+private int TotalAlien;//to keep track of total bricks
 private int Win;//to keep score of destroyed bricks
 private int BricksAlive;// to know how many bricks still in the game
     /**
@@ -55,14 +55,15 @@ private int BricksAlive;// to know how many bricks still in the game
         this.height = height;
         keyManager = new KeyManager();
         enemigo = new LinkedList<Enemigo>(); //lista que despliega los bricks
-        
+        bomb = new LinkedList<Bomb>();
         this.start = false;//we initialize the game as false meaning it wont start
         score = 0; //puntaje es 0 cuando inicia el juego
         num = "Score:"+score; //string que despliega en la pantalla el puntaje
         this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
         this.state = 0; //Se inicializa en 0 que significa que el juego todavia no empieza
         this.Win = 0; // se inicializa como 0 cuando inicia el juego porque todavia no destruye ningun brick
-        this.TotalBricks = 0; //se inicializa como 0 y ya despues se asignan los bricks con un for
+        this.TotalAlien = 0; //se inicializa como 0 y ya despues se asignan los bricks con un for
+        this.lasershoot=true;
     }
 
     /**
@@ -140,9 +141,7 @@ private int BricksAlive;// to know how many bricks still in the game
     /**
      *
      */
-    public void loseLife(){
-        this.player.setLives(this.player.getLives()-1);
-    }
+
     
     /**
      *
@@ -150,6 +149,14 @@ private int BricksAlive;// to know how many bricks still in the game
      */
     public KeyManager getKeyManager() {
             return keyManager;
+    }
+
+    public boolean isLasershoot() {
+        return lasershoot;
+    }
+
+    public void setLasershoot(boolean lasershoot) {
+        this.lasershoot = lasershoot;
     }
 
     /**
@@ -173,12 +180,12 @@ private int BricksAlive;// to know how many bricks still in the game
      * @return
      */
     
-    private int getTotalBricks() {
-        return TotalBricks;
+    private int getTotalAlien() {
+        return TotalAlien;
     }
     
-    private void setTotalBricks(int i) {
-       this.TotalBricks = i;
+    private void setTotalAlien(int i) {
+       this.TotalAlien = i;
     }
     private int getWin() {
         return Win;
@@ -202,17 +209,23 @@ private int BricksAlive;// to know how many bricks still in the game
         display = new Display(title, getWidth(), getHeight());
         //we add our assets from our Assets class
         Assets.init(); 
-        bomb = new Bomb(300,300,16,32,this);
+
+           
+        
+        
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
-        player = new Player(getWidth()/2-48, getHeight()-60, 1, 48,57 , this);
-        //we add the ball on top of the player          
-        laser = new Laser(370, getHeight()-130, 1, 40, 40, this);
-        //we create a block matrix
+
+        player = new Player(getWidth()/2-48, getHeight()-60, 1, 32,38 , this);
+
+        //we add the laser but with no size         
+        laser = new Laser(0, 0, 0, 0, 0, this);
+        //we create an alien matrix
         for(int j = 1; j <= 4; j++) {
             for (int i = 1; i <= 6; i++) {
-                 enemigo.add(new Enemigo(getWidth()-30 - 70*i ,5 + 60*j, 50, 50, this));  
-                 setTotalBricks(getTotalBricks()+1);
+                 enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
+                 setTotalAlien(getTotalAlien()+1);
+                 bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
             } 
         }
         display.getJframe().addKeyListener(keyManager);
@@ -221,11 +234,11 @@ private int BricksAlive;// to know how many bricks still in the game
     private void tick() {
         keyManager.tick();
         //para guardar el juego se tiene que oprimir la letra "G"
-        if(getKeyManager().save){
+        if(getKeyManager().save && state == 1){
             saveGame();
         }
         //Para cargar el juego guardado se tiene que oprimir la letra "C"
-        if(getKeyManager().load){
+        if(getKeyManager().load && state==1){
             loadGame();
         }
         //starting the game with spacebar
@@ -240,19 +253,18 @@ private int BricksAlive;// to know how many bricks still in the game
             setPausa(false);
         }
         //pause logic
-       if (state !=3){
+       if (state !=3 && isStart()){
             //advancing player with colition
             player.tick();
-            laser.tick();
-            bomb.tick();
-            if (player.intersecta(laser)){
-                laser.setDirection(2);
-             }
+            laser.tick();         
+
               
              //we actualize the bricks for rendering
              for (int i = 0; i < enemigo.size(); i++) {
                Enemigo marciano =  enemigo.get(i);
                marciano.tick();
+               Bomb beam = bomb.get(i);
+               beam.tick();
                if(marciano.getX()>getWidth()-marciano.getWidth() || marciano.getX()<-2){
                     for(int j = 0; j < enemigo.size(); j++){
                         Enemigo alien = enemigo.get(j);
@@ -260,20 +272,72 @@ private int BricksAlive;// to know how many bricks still in the game
                     }
                 }
                if(marciano.intersecta(laser)){
-                  laser.oppositeDirection();
-                  marciano.changeAlive();
+                  Assets.alienExplosion.play();
+                  marciano.changeAlive(); 
+                  laser.destroy();
+                  laser.canShoot();
+                  setWin(getWin()+1);
                   //actualize score
-                  setScore(getScore() + 10);
+                  setScore(getScore() + 100);
                   setNum("Score: "+ getScore());
+             }
+               if(marciano.intersect(player) || marciano.getY()+marciano.getHeight()>getHeight()){
+                   Assets.deadPlayer.play();
+                    player.loseLife();
+                    setScore(getScore() - 50);
+                    setNum("Score: "+ getScore());
+                    setStart(false);
+                    player.setX(320);
+                    laser.setX(370);
+                    laser.setY(-100); 
+                    for(int k = 0; k <enemigo.size();k++){
+                        Enemigo xenomorph = enemigo.get(k);
+                        xenomorph.reset();
+                        Bomb granada = bomb.get(k);
+                        granada.setY(getHeight()+100);
+                    }
+             }
+               int iNum = (int) (Math.random() * 1000);
+               if(iNum > 995 && marciano.isAlive() && state == 1 && !beam.isActive()){
+                   Assets.alienBeam.play();
+                   beam.setX(marciano.getX());
+                   beam.setY(marciano.getY());
+                   beam.setActive(true);
+               }
+               if(beam.intersecta(player)){
+                   Assets.deadPlayer.play();
+                   player.loseLife();
+                   setScore(getScore() - 50);
+                   setNum("Score: "+ getScore());
+                   setStart(false);
+                   beam.setActive(false);
+                   player.setX(320);
+                   laser.setY(-100);
+                   for(int k = 0; k <enemigo.size();k++){
+                        Enemigo xenomorph = enemigo.get(k);
+                        xenomorph.reset();
+                        Bomb granada = bomb.get(k);
+                        granada.setY(getHeight()+100);
+                   }
+               }
+             
+
+
                 }
 
-             }
-
+            if (getKeyManager().shoot && laser.isShooting()&& state == 1){
+                Assets.laserSound.play();
+            laser = new Laser( player.getX() + 11, player.getY()-10, 1, 10, 10, this);
+            laser.cantShoot();
+            }
+            if(laser.getY()<0){
+                laser.canShoot();
+            }
 
              //logic for when the player loses a live
+
              if(laser.getY() > getHeight() && player.getLives() > 0 ){
-                 loseLife();
-                 laser.setSpeed(laser.getSpeed()-1);
+                 player.loseLife();
                  setScore(getScore() - 50);
                  setNum("Score: "+ getScore());
                  setStart(false);
@@ -285,14 +349,14 @@ private int BricksAlive;// to know how many bricks still in the game
              else if (player.getLives() == 0){ 
                  state = 5;
                  player.setSpeed(0);
-                 laser.setSpeed(0);
+                 laser.cantShoot();
                 
              }
              //sets our win condition
-             if(getTotalBricks() == getWin()){
+             if(getTotalAlien() == getWin()){
                  state = 4;
                  player.setSpeed(0);
-                 laser.setSpeed(0);
+                 laser.cantShoot();
 
              }
              //restart the game
@@ -304,13 +368,13 @@ private int BricksAlive;// to know how many bricks still in the game
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
+
                     player.setX(320);
                     player.setY(getHeight()-100);
                     player.setLives(3);
                     player.setSpeed(4);
                     Assets.song.play();
                     setStart(false);
-                    laser.changeVisibility(true);
                     laser.setX(370); 
                     laser.setY(getHeight()-130);
                     laser.setSpeed(4);
@@ -318,7 +382,7 @@ private int BricksAlive;// to know how many bricks still in the game
                    for(int j = 1; j <= 3; j++) {
                        for (int i = 1; i <= 7; i++) {
                             enemigo.add(new Enemigo(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));   
-                           setTotalBricks(getTotalBricks()+1);
+                           setTotalAlien(getTotalAlien()+1);
                        } 
                    }
                    //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
@@ -347,11 +411,20 @@ private void render() {
         Graphics g = bs.getDrawGraphics();
         g.drawImage(Assets.background, 0, 0, width, height, null); 
         player.render(g);//render the player
-        bomb.render(g);
+        
+        laser.render(g);
         //loopfor rendering all bricks
         for (int i = 0; i < enemigo.size(); i++) {
-            Enemigo brickz =  enemigo.get(i);
-            brickz.render(g);
+            Enemigo ET =  enemigo.get(i);
+            ET.render(g);
+            
+            if(ET.getTime()>0&&!ET.isAlive()){
+               g.setColor(Color.WHITE);
+               g.drawString("+100", ET.getX(), ET.getY()); 
+               ET.setTime(ET.getTime()-1);
+            }
+            Bomb boom=bomb.get(i);
+            boom.render(g);
         }
         //pause case
         if (state == 3) {
@@ -366,11 +439,12 @@ private void render() {
         if (state == 5 ) { 
                g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
                Assets.song.stop();
-               laser.changeVisibility(false);
                setPausa(true);     
         }
-        //graw score
+        //draw score
+        g.setColor(Color.WHITE);
         g.drawString(num, 700, 20);
+        //g.drawString("this is something I want people to <p color=\"#FFFFFF\">NOTICE</p>", 700, 50);
         //draw ball
         laser.render(g);
         bs.show();
