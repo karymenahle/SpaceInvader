@@ -41,7 +41,7 @@ private int score; // puntaje
 private String num; //to display score
 private boolean pausa;//to pause the game
 private int state; //to know if 1=running 2= endgame 3= pause 4= win 5=gameover
-private int TotalBricks;//to keep track of total bricks
+private int TotalAlien;//to keep track of total bricks
 private int Win;//to keep score of destroyed bricks
 private int BricksAlive;// to know how many bricks still in the game
     /**
@@ -63,7 +63,7 @@ private int BricksAlive;// to know how many bricks still in the game
         this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
         this.state = 0; //Se inicializa en 0 que significa que el juego todavia no empieza
         this.Win = 0; // se inicializa como 0 cuando inicia el juego porque todavia no destruye ningun brick
-        this.TotalBricks = 0; //se inicializa como 0 y ya despues se asignan los bricks con un for
+        this.TotalAlien = 0; //se inicializa como 0 y ya despues se asignan los bricks con un for
         this.lasershoot=true;
     }
 
@@ -142,9 +142,7 @@ private int BricksAlive;// to know how many bricks still in the game
     /**
      *
      */
-    public void loseLife(){
-        this.player.setLives(this.player.getLives()-1);
-    }
+
     
     /**
      *
@@ -183,12 +181,12 @@ private int BricksAlive;// to know how many bricks still in the game
      * @return
      */
     
-    private int getTotalBricks() {
-        return TotalBricks;
+    private int getTotalAlien() {
+        return TotalAlien;
     }
     
-    private void setTotalBricks(int i) {
-       this.TotalBricks = i;
+    private void setTotalAlien(int i) {
+       this.TotalAlien = i;
     }
     private int getWin() {
         return Win;
@@ -218,13 +216,13 @@ private int BricksAlive;// to know how many bricks still in the game
 
         player = new Player(getWidth()/2-48, getHeight()-60, 1, 48,57 , this);
 
-        //we add the ball on top of the player          
+        //we add the laser but with no size         
         laser = new Laser(0, 0, 0, 0, 0, this);
-        //we create a block matrix
+        //we create an alien matrix
         for(int j = 1; j <= 4; j++) {
             for (int i = 1; i <= 6; i++) {
                  enemigo.add(new Enemigo(getWidth()-30 - 70*i ,5 + 60*j, 40, 40, this));  
-                 setTotalBricks(getTotalBricks()+1);
+                 setTotalAlien(getTotalAlien()+1);
             } 
         }
         display.getJframe().addKeyListener(keyManager);
@@ -273,6 +271,7 @@ private int BricksAlive;// to know how many bricks still in the game
                   marciano.changeAlive();
                   laser.destroy();
                   laser.canShoot();
+                  setWin(getWin()+1);
                   //actualize score
                   setScore(getScore() + 10);
                   setNum("Score: "+ getScore());
@@ -293,8 +292,7 @@ private int BricksAlive;// to know how many bricks still in the game
 
              //logic for when the player loses a live
              if(laser.getY() > getHeight() && player.getLives() > 0 ){
-                 loseLife();
-                 laser.setSpeed(laser.getSpeed()-1);
+                 player.loseLife();
                  setScore(getScore() - 50);
                  setNum("Score: "+ getScore());
                  setStart(false);
@@ -310,7 +308,7 @@ private int BricksAlive;// to know how many bricks still in the game
                 
              }
              //sets our win condition
-             if(getTotalBricks() == getWin()){
+             if(getTotalAlien() == getWin()){
                  state = 4;
                  player.setSpeed(0);
                  laser.setSpeed(0);
@@ -339,7 +337,7 @@ private int BricksAlive;// to know how many bricks still in the game
                    for(int j = 1; j <= 3; j++) {
                        for (int i = 1; i <= 7; i++) {
                             enemigo.add(new Enemigo(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));   
-                           setTotalBricks(getTotalBricks()+1);
+                           setTotalAlien(getTotalAlien()+1);
                        } 
                    }
                    //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio

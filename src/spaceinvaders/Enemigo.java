@@ -95,8 +95,10 @@ public class Enemigo extends Item{
         this.height = height;
     }
     public void SwitchLayer(){
-        setY(getY()+getHeight());
-        setDirection(getDirection()*-1);
+        if (!game.isPausa()){
+            setY(getY()+getHeight());
+            setDirection(getDirection()*-1);
+        }
     }
 
     /**
@@ -104,11 +106,13 @@ public class Enemigo extends Item{
      */
     @Override
     public void tick() {
+        
+        if (!game.isPausa()){
         this.Alien.tick();
         if(isAlive()){
           setX(getX()+getDirection());  
         }
-        
+        }
 
         if(!isAlive()){
             setWidth(0);
