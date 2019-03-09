@@ -71,8 +71,8 @@ public class Bomb extends Item{
     public void tick() {
         this.bomba.tick();
         
-        if(game.isStart()){
-            if (game.isPausa()==false){
+      
+            if (!game.isPausa()){
         
                 setY(getY()+getSpeed());
                 if(getY()>game.getHeight()){
@@ -80,7 +80,7 @@ public class Bomb extends Item{
                 }
             }
     }
-    }
+    
     
     public boolean intersecta(Player obj){
      return obj instanceof Player  && getPerimetro().intersects(((Player) obj).getPerimetro());
