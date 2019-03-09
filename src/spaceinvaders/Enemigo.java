@@ -28,7 +28,7 @@ public class Enemigo extends Item{
     private boolean showpoints;
     private Animation Alien;
     private int direction;
-
+    private int time;
 
     /**
      *
@@ -49,7 +49,17 @@ public class Enemigo extends Item{
         this.initialX = x;
         this.initialY = y;
         this.showpoints = false;
+        this.time = 15;
     }
+    
+    public void setTime(int t){
+        this.time=t;
+    }
+    
+    public int getTime(){
+        return time;
+    }
+        
     public void reset(){
         setX(initialX);
         setY(initialY);

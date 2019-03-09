@@ -33,7 +33,6 @@ private LinkedList<Bomb> bomb;
 private Laser laser; //To use the ball
 private boolean start;//to start the game
 private boolean lasershoot;
-
 private LinkedList<Enemigo> enemigo;
 
 private KeyManager keyManager; //to manage the keyboard
@@ -217,7 +216,7 @@ private int BricksAlive;// to know how many bricks still in the game
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
 
-        player = new Player(getWidth()/2-48, getHeight()-60, 1, 48,57 , this);
+        player = new Player(getWidth()/2-48, getHeight()-60, 1, 32,38 , this);
 
         //we add the laser but with no size         
         laser = new Laser(0, 0, 0, 0, 0, this);
@@ -235,11 +234,11 @@ private int BricksAlive;// to know how many bricks still in the game
     private void tick() {
         keyManager.tick();
         //para guardar el juego se tiene que oprimir la letra "G"
-        if(getKeyManager().save){
+        if(getKeyManager().save && state == 1){
             saveGame();
         }
         //Para cargar el juego guardado se tiene que oprimir la letra "C"
-        if(getKeyManager().load){
+        if(getKeyManager().load && state==1){
             loadGame();
         }
         //starting the game with spacebar
@@ -279,10 +278,10 @@ private int BricksAlive;// to know how many bricks still in the game
                   laser.canShoot();
                   setWin(getWin()+1);
                   //actualize score
-                  setScore(getScore() + 10);
+                  setScore(getScore() + 100);
                   setNum("Score: "+ getScore());
              }
-               if(marciano.intersect(player)){
+               if(marciano.intersect(player) || marciano.getY()+marciano.getHeight()>getHeight()){
                    Assets.deadPlayer.play();
                     player.loseLife();
                     setScore(getScore() - 50);
@@ -290,7 +289,7 @@ private int BricksAlive;// to know how many bricks still in the game
                     setStart(false);
                     player.setX(320);
                     laser.setX(370);
-                    laser.setY(player.getY() - 40); 
+                    laser.setY(-100); 
                     for(int k = 0; k <enemigo.size();k++){
                         Enemigo xenomorph = enemigo.get(k);
                         xenomorph.reset();
@@ -299,10 +298,11 @@ private int BricksAlive;// to know how many bricks still in the game
                     }
              }
                int iNum = (int) (Math.random() * 1000);
-               if(iNum > 998 && marciano.isAlive()){
+               if(iNum > 995 && marciano.isAlive() && state == 1 && !beam.isActive()){
                    Assets.alienBeam.play();
                    beam.setX(marciano.getX());
                    beam.setY(marciano.getY());
+                   beam.setActive(true);
                }
                if(beam.intersecta(player)){
                    Assets.deadPlayer.play();
@@ -310,9 +310,9 @@ private int BricksAlive;// to know how many bricks still in the game
                    setScore(getScore() - 50);
                    setNum("Score: "+ getScore());
                    setStart(false);
+                   beam.setActive(false);
                    player.setX(320);
-                   laser.setX(370);
-                   laser.setY(player.getY() - 40); 
+                   laser.setY(-100);
                    for(int k = 0; k <enemigo.size();k++){
                         Enemigo xenomorph = enemigo.get(k);
                         xenomorph.reset();
@@ -325,7 +325,7 @@ private int BricksAlive;// to know how many bricks still in the game
 
                 }
 
-            if (getKeyManager().shoot && laser.isShooting()){
+            if (getKeyManager().shoot && laser.isShooting()&& state == 1){
                 Assets.laserSound.play();
             laser = new Laser( player.getX() + 11, player.getY()-10, 1, 10, 10, this);
             laser.cantShoot();
@@ -349,14 +349,14 @@ private int BricksAlive;// to know how many bricks still in the game
              else if (player.getLives() == 0){ 
                  state = 5;
                  player.setSpeed(0);
-                 laser.setSpeed(0);
+                 laser.cantShoot();
                 
              }
              //sets our win condition
              if(getTotalAlien() == getWin()){
                  state = 4;
                  player.setSpeed(0);
-                 laser.setSpeed(0);
+                 laser.cantShoot();
 
              }
              //restart the game
@@ -417,6 +417,12 @@ private void render() {
         for (int i = 0; i < enemigo.size(); i++) {
             Enemigo ET =  enemigo.get(i);
             ET.render(g);
+            
+            if(ET.getTime()>0&&!ET.isAlive()){
+               g.setColor(Color.WHITE);
+               g.drawString("+100", ET.getX(), ET.getY()); 
+               ET.setTime(ET.getTime()-1);
+            }
             Bomb boom=bomb.get(i);
             boom.render(g);
         }
@@ -435,8 +441,10 @@ private void render() {
                Assets.song.stop();
                setPausa(true);     
         }
-        //graw score
+        //draw score
+        g.setColor(Color.WHITE);
         g.drawString(num, 700, 20);
+        //g.drawString("this is something I want people to <p color=\"#FFFFFF\">NOTICE</p>", 700, 50);
         //draw ball
         laser.render(g);
         bs.show();

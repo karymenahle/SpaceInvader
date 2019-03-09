@@ -53,12 +53,10 @@ public class Laser extends Item{
         this.speed = speed;
     }
 
-    
     public int getDirection() {
         return direction;
     }
-
-    
+  
     public int getWidth() {
         return width;
     }
