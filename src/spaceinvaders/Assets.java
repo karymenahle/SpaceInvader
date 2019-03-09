@@ -19,6 +19,10 @@ public class Assets {
     public static BufferedImage gameover; //variable de que perdio
     public static BufferedImage win; //variable de que gano 
     public static SoundClip song; //cancion del juego
+    public static SoundClip laserSound;
+    public static SoundClip alienExplosion;
+    public static SoundClip deadPlayer;
+    public static SoundClip alienBeam;
     public static BufferedImage laser;
     
     public static BufferedImage BallImages[]; 
@@ -37,29 +41,25 @@ player = ImageLoader.loadImage("/Images/player.png"); //la van
 pause = ImageLoader.loadImage("/Images/pause.png"); //imagen que indica pausa
 gameover = ImageLoader.loadImage("/Images/GameO.jpg"); //imagen de gameover
 win = ImageLoader.loadImage("/Images/win.png");//imagen de Win
-song = new SoundClip("/sounds/Megalovania.wav", -3f,true); //cancion del juego
+song = new SoundClip("/sounds/zeddZelda.wav", -3f,true); //cancion del juego
 ballSprites = ImageLoader.loadImage("/Images/SpriteBall.png");//imagenes de ball
 SpriteSheet ballspritesheet = new SpriteSheet(ballSprites);//sprite de ball
 laser = ImageLoader.loadImage("/Images/laser.png");
-
-
+laserSound = new SoundClip("/sounds/bulletSound.wav",-3f,false);
+alienExplosion = new SoundClip("/sounds/damageSound.wav",-3f,false);
+deadPlayer = new SoundClip("/sounds/deathSound.wav",-3f,false);
+alienBeam = new SoundClip("/sounds/alienBeam.wav",-3f,false);
     alienSprites = ImageLoader.loadImage("/Images/SpaceInvaders.png");
     SpriteSheet alienSpriteSheet = new SpriteSheet(alienSprites);
 
     AlienImages = new BufferedImage[14];
     for(int k = 0; k < 14; k++){
         AlienImages[k] = alienSpriteSheet.crop(0+16*k,17,15,15);
-        k++;
     }
     //se corta la imagen de los sprites de los bricks
 
     player = alienSpriteSheet.crop(0,32,17,18);
     //se corta la imagen de los sprites de ball
-    BallImages = new BufferedImage[8];
-    for (int i = 0; i < 8; i++){
-        BallImages[i] = ballspritesheet.crop(0+40*i,0,32,32);
-    
-    }
     BombImages = new BufferedImage[2];
     BombImages[0] = alienSpriteSheet.crop(48,0,8,16);
     BombImages[1] = alienSpriteSheet.crop(56,0,8,16);

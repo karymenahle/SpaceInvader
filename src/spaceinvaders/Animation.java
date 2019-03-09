@@ -103,12 +103,13 @@ public class Animation {
     timer += System.currentTimeMillis() - lastTime; //tiempo de la animacion
     lastTime = System.currentTimeMillis(); //ultimo tiempo de la animacion
     if( timer > speed){ //si el tiempo es mayor a speed
-        index=index+2; //se le aumenta 1 a index
+        index++; //se le aumenta 1 a index
         timer = 0; //se recetea el tiempo
         if(index >= frames.length){ //si index es mayor o igual a la longitud de frames
             index = 0; //se actualiza index 
         }
     }
+    
     if (nxtblock){
         staticIndex++;
         isNxtBlock(!nxtblock);

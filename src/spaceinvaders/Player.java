@@ -72,6 +72,9 @@ private int lives;
     public void setLives(int life){
         this.lives = life;
     }
+    public void loseLife(){
+        setLives(getLives()-1);
+    }
 
     
     @Override 
@@ -79,7 +82,7 @@ private int lives;
 
           //Si se presiona space empieza el juego
           if (game.isStart()){
-              if (game.isPausa() == false){
+              if (!game.isPausa()){
         //Solo se mueve a la derecha o a la izquierda 
         
           if(game.getKeyManager().left){
@@ -112,9 +115,9 @@ private int lives;
         }
 
        //intesecta con el lado izquierdo
-       public boolean intersecta(Laser obj){
-            return obj instanceof Laser  && getPerimetro().intersects(((Laser) obj).getPerimetro());
-            }
+      // public boolean intersecta(Enemigo obj){
+        //    return obj instanceof Enemigo  && getPerimetro().intersects(((Enemigo) obj).getPerimetro());
+        //    }
 
        
     //To paint the item

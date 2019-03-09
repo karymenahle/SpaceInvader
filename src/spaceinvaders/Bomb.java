@@ -20,7 +20,7 @@ public class Bomb extends Item{
     private int speed;
 
     private Animation bomba; //la animacion de la pelota (esta girando)
-    private boolean bVisible; //
+    private boolean Active; //
     
     public Bomb(int x, int y, int width, int height, Game game) {
         super(x, y);
@@ -29,13 +29,13 @@ public class Bomb extends Item{
         this.game = game;
         this.speed = 2;
         this.bomba = new Animation(Assets.BombImages, 100); //se inicializa con la imagen principal 
-        this.bVisible = true;
+        this.Active = false;
     }
-    public boolean isVisible(){
-        return bVisible;
+    public boolean isActive(){
+        return Active;
     }
-    public void changeVisibility(boolean b){
-        this.bVisible = b;
+    public void setActive(boolean b){
+        this.Active = b;
     }
 
     public int getSpeed() {
@@ -75,7 +75,9 @@ public class Bomb extends Item{
             if (game.isPausa()==false){
         
                 setY(getY()+getSpeed());
-       
+                if(getY()>game.getHeight()){
+                    setActive(false);
+                }
             }
     }
     }
@@ -90,7 +92,7 @@ public class Bomb extends Item{
             
     @Override
     public void render(Graphics g) {
-        if(isVisible()){
+        if(isActive()){
           g.drawImage(bomba.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);  
         }
         
