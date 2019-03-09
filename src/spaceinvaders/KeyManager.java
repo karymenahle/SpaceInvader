@@ -17,7 +17,7 @@ public class KeyManager implements KeyListener {
     public boolean down; // para mover hacia abajo
     public boolean left; // para mover hacia la izquierda
     public boolean right; // para mover a la derecha
-    public boolean space; //Para ver si esta oprimida la tecla space
+    public boolean enter; //Para ver si esta oprimida la tecla space
     public boolean pause; //para poner el juego en pausa
     public boolean again; //para reiniciar el juego
     public boolean save; //para guardar el juego en un archivo 
@@ -52,12 +52,12 @@ public class KeyManager implements KeyListener {
        // to enable o disable every key 
     left = keys[KeyEvent.VK_LEFT];
     right = keys[KeyEvent.VK_RIGHT];
-    space = keys[KeyEvent.VK_SPACE];
+    enter = keys[KeyEvent.VK_ENTER];
     pause = keys[KeyEvent.VK_P]; //tecla P para poner en pausa
     again = keys[KeyEvent.VK_R]; //Tecla R para restart
     save = keys[KeyEvent.VK_G]; //Tecla G para guardar juego
     load = keys[KeyEvent.VK_C]; //Tecla C para cargar juego
-    shoot=keys[KeyEvent.VK_X];
+    shoot=keys[KeyEvent.VK_SPACE];
     }
     
 }
