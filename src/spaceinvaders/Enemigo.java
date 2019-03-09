@@ -75,6 +75,14 @@ public class Enemigo extends Item{
         this.showpoints=true;
     }
 
+    public boolean isShowpoints() {
+        return showpoints;
+    }
+
+    public void setShowpoints(boolean showpoints) {
+        this.showpoints = showpoints;
+    }
+
     /**
      * 
      * @return 
@@ -82,6 +90,10 @@ public class Enemigo extends Item{
     
     public boolean isAlive(){
         return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
     
     public void changeAlive(){
@@ -120,10 +132,10 @@ public class Enemigo extends Item{
         this.height = height;
     }
     public void SwitchLayer(){
-        if (!game.isPausa()){
+      if (!game.isPausa()){
             setY(getY()+getHeight());
             setDirection(getDirection()*-1);
-        }
+      }
     }
 
     /**
@@ -131,19 +143,18 @@ public class Enemigo extends Item{
      */
     @Override
     public void tick() {
-        
-        if (!game.isPausa()){
+         if (!game.isPausa()){
         this.Alien.tick();
         if(isAlive()){
           setX(getX()+getDirection());  
         }
-        }
+
 
         if(!isAlive()){
             setWidth(0);
             setHeight(0);
         }
-        
+         }
     }
     
 
