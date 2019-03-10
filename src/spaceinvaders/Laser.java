@@ -31,7 +31,7 @@ public class Laser extends Item{
         this.height = height;
         this.game = game;
         this.direction = 4;
-        this.speed = 15;
+        this.speed = 10;
         this.shooting = true;
     }
     

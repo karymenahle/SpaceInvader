@@ -135,6 +135,8 @@ public class Enemigo extends Item{
         setHeight(0);
         setWidth(0);
         setAlive(false);
+        setX(-1000);
+        setY(-1000);
     }
     public void SwitchLayer(){
       if (!game.isPausa()){

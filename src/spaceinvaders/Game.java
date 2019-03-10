@@ -227,7 +227,7 @@ private int Win;//to keep score of destroyed bricks
             saveGame();
         }
         //Para cargar el juego guardado se tiene que oprimir la letra "C"
-        if(getKeyManager().load && state==1){
+        if(getKeyManager().load && state == 1){
             loadGame();
         }
 
@@ -341,24 +341,24 @@ private int Win;//to keep score of destroyed bricks
 
              }
              //restart the game
-             if(getKeyManager().again){ //R is pressed 
-                if(state == 4 ){// || state == 5){//if win or game over
-                    state = 1;
-
-                
-                    
-
+             if(getKeyManager().again){ //R is pressed           
+                    state = 1;                             
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
-
-                    player.setX(320);
-                    player.setY(getHeight()-100);
+                    for(int w = 0; w<enemigo.size();w++){
+                        Enemigo Area51 = enemigo.get(w);
+                        Area51.setAlive(false);
+                    }
+                    player.setX(getWidth()/2-48);
+                    player.setY(getHeight()-60);
                     player.setLives(3);
                     player.setSpeed(4);
                     Assets.song.play();
                     laser.setX(0); 
                     laser.setY(0);
+                    setWin(0);
+                    setTotalAlien(0);
                     //Se vuelve a desplegar la matriz de bricksfor(int j = 1; j <= 4; j++) {
                 for(int j = 1; j <= 4; j++) {
                 for (int i = 1; i <= 6; i++) {
@@ -371,8 +371,8 @@ private int Win;//to keep score of destroyed bricks
                    //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
                    saveGame();
                    
-                }
                 
+                /*
                 if(state == 5){// || state == 5){//if win or game over
 
                     state = 1;
@@ -392,19 +392,11 @@ private int Win;//to keep score of destroyed bricks
                     Assets.song.play();
                     laser.setX(0); 
                     laser.setY(0);
-                    //Se vuelve a desplegar la matriz de bricksfor(int j = 1; j <= 4; j++) {
-            //    for(int j = 1; j <= 4; j++) {
-            //    for (int i = 1; i <= 6; i++) {
-            //     enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
-            //     setTotalAlien(getTotalAlien()+1);
-            //     bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
-            //} 
-        //}
         
                    //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
                    saveGame();
                    
-                }
+                }*/
                 
              }
     }
@@ -435,7 +427,7 @@ private void render() {
             Enemigo ET =  enemigo.get(i);
             ET.render(g);
             
-            if(ET.getTime()>0&&!ET.isAlive()){
+            if(ET.getTime()>0&&!ET.isAlive()&&state==1){
                g.setColor(Color.WHITE);
                g.drawString("+100", ET.getX(), ET.getY()); 
                ET.setTime(ET.getTime()-1);
