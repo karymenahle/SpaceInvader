@@ -29,6 +29,7 @@ private Thread thread;
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
+private Alien alien;
 private LinkedList<Bomb> bomb;
 private Laser laser; //To use the ball
 private boolean lasershoot;
@@ -256,7 +257,7 @@ private int Win;//to keep score of destroyed bricks
                         Enemigo alien = enemigo.get(j);
                         alien.SwitchLayer();
                     }
-                }
+               }
                if(marciano.intersecta(laser)){
                   Assets.alienExplosion.play();
                   marciano.changeAlive(); 
@@ -297,16 +298,13 @@ private int Win;//to keep score of destroyed bricks
                    beam.setActive(false);
                    player.setX(320);
                    laser.setY(-100);
-                   for(int k = 0; k <enemigo.size();k++){
+                  for(int k = 0; k <enemigo.size();k++){
                         Enemigo xenomorph = enemigo.get(k);
-                        xenomorph.reset();
-                        Bomb granada = bomb.get(k);
+                    //    xenomorph.reset();
+                       Bomb granada = bomb.get(k);
                         granada.setY(getHeight()+100);
                    }
                }
-             
-
-
                 }
 
             if (getKeyManager().shoot && laser.isShooting()&& state == 1){
@@ -332,8 +330,8 @@ private int Win;//to keep score of destroyed bricks
              else if (player.getLives() == 0){ 
                  state=5;
                  player.setSpeed(0);
-                 laser.cantShoot();
-                
+                 laser.cantShoot(); 
+                 
              }
              //sets our win condition
              if(getTotalAlien() == getWin()){
@@ -344,7 +342,7 @@ private int Win;//to keep score of destroyed bricks
              }
              //restart the game
              if(getKeyManager().again){ //R is pressed 
-                if(state == 4 || state == 5){//if win or game over
+                if(state == 4){// || state == 5){//if win or game over
 
                     state = 1;
 
@@ -360,7 +358,7 @@ private int Win;//to keep score of destroyed bricks
                     laser.setX(0); 
                     laser.setY(0);
                     //Se vuelve a desplegar la matriz de bricksfor(int j = 1; j <= 4; j++) {
-                  for(int j = 1; j <= 4; j++) {
+                for(int j = 1; j <= 4; j++) {
                 for (int i = 1; i <= 6; i++) {
                  enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
                  setTotalAlien(getTotalAlien()+1);
@@ -372,6 +370,36 @@ private int Win;//to keep score of destroyed bricks
                    saveGame();
                    
                 }
+                
+                if(state == 5){// || state == 5){//if win or game over
+
+                    state = 1;
+
+                    //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
+                    setScore(0);
+                    setNum("Score:"+score);
+
+                    player.setX(320);
+                    player.setY(getHeight()-100);
+                    player.setLives(3);
+                    player.setSpeed(4);
+                    Assets.song.play();
+                    laser.setX(0); 
+                    laser.setY(0);
+                    //Se vuelve a desplegar la matriz de bricksfor(int j = 1; j <= 4; j++) {
+            //    for(int j = 1; j <= 4; j++) {
+            //    for (int i = 1; i <= 6; i++) {
+            //     enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
+            //     setTotalAlien(getTotalAlien()+1);
+            //     bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
+            //} 
+        //}
+        
+                   //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
+                   saveGame();
+                   
+                }
+                
              }
     }
     }
@@ -422,7 +450,7 @@ private void render() {
         if (state == 5 ) { 
                g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
                Assets.song.stop();
-               setPausa(true);  
+               setPausa(true);
         }
         
         //draw score
