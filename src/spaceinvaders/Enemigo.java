@@ -131,6 +131,11 @@ public class Enemigo extends Item{
     public void setHeight(int height) {
         this.height = height;
     }
+    public void delete(){
+        setHeight(0);
+        setWidth(0);
+        setAlive(false);
+    }
     public void SwitchLayer(){
       if (!game.isPausa()){
             setY(getY()+getHeight());

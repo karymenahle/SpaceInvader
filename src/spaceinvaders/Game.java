@@ -342,9 +342,11 @@ private int Win;//to keep score of destroyed bricks
              }
              //restart the game
              if(getKeyManager().again){ //R is pressed 
-                if(state == 4){// || state == 5){//if win or game over
-
+                if(state == 4 ){// || state == 5){//if win or game over
                     state = 1;
+
+                
+                    
 
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
@@ -374,6 +376,10 @@ private int Win;//to keep score of destroyed bricks
                 if(state == 5){// || state == 5){//if win or game over
 
                     state = 1;
+                    for(int iY = 0; iY<enemigo.size();iY++){
+                       Enemigo Alf = enemigo.get(iY);
+                       Alf.reset();
+                    }
 
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
