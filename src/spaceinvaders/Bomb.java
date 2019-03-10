@@ -72,7 +72,7 @@ public class Bomb extends Item{
         this.bomba.tick();
         
       
-            if (!game.isPausa()){
+            if (game.getState()==1){
         
                 setY(getY()+getSpeed());
                 if(getY()>game.getHeight()){

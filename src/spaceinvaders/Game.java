@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -196,32 +197,46 @@ private int Win;//to keep score of destroyed bricks
         display = new Display(title, getWidth(), getHeight());
         //we add our assets from our Assets class
         Assets.init(); 
-
         //Para cargar el juego guardado se tiene que oprimir la letra "C"
         if(getKeyManager().load && state==1){
             loadGame();
-        }
-        
+        }  
         Assets.song.play();//we play Megalovania by toby fox
         //we add the player
-
         player = new Player(getWidth()/2-48, getHeight()-60, 1, 32,38 , this);
-
         //we add the laser but with no size         
         laser = new Laser(0, 0, 0, 0, 0, this);
         //we create an alien matrix
         for(int j = 1; j <= 4; j++) {
             for (int i = 1; i <= 6; i++) {
-                 enemigo.add(new Enemigo(getWidth()-30 - 100*i ,5 + 60*j, 40, 40, this));  
+                 enemigo.add(new Enemigo(getWidth()-30 - 110*i , 60*j, 40, 40, this));  
                  setTotalAlien(getTotalAlien()+1);
                  bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
             } 
         }
         display.getJframe().addKeyListener(keyManager);
+                    JOptionPane.showMessageDialog(null, "Space Invaders!\n\nTECLAS:\n\n- Usa las flechas izquierda/derecha para moverte\n- Prsiona spacebar para disparar\n- No toques a los marcianos ni sus bombas"
+                    + "\n- G para guardar\n-C para cargar\n- P para pausar\n- R para resetear\n- JUEGA CON SONIDO\n\nHAVE FUN!");
     }
 
     private void tick() {
         keyManager.tick();
+
+        if (getKeyManager().pause && !isPausa()){
+            if(getState() == 1){ 
+                setState(3);
+                
+            }else{    
+                setState(1); 
+            } 
+            setPausa(true);
+        }
+        else if (!getKeyManager().pause){
+            setPausa(false);
+        }
+        //pause logic
+       if (state != 3 && !isPausa()){
+           
         //para guardar el juego se tiene que oprimir la letra "G"
         if(getKeyManager().save && state == 1){
             saveGame();
@@ -230,17 +245,6 @@ private int Win;//to keep score of destroyed bricks
         if(getKeyManager().load && state == 1){
             loadGame();
         }
-
-        if (getKeyManager().pause && !isPausa()){
-            state=(state == 1 ? 3:1);
-            setPausa(true);
-        }
-        else if (!getKeyManager().pause){
-            setPausa(false);
-        }
-        
-        //pause logic
-       if (state !=3){
             //advancing player with colition
             player.tick();
             laser.tick();         
@@ -252,6 +256,7 @@ private int Win;//to keep score of destroyed bricks
                marciano.tick();
                Bomb beam = bomb.get(i);
                beam.tick();
+               //logica para cambiar a la fila de abajo y direcion de los
                if(marciano.getX()>getWidth()-marciano.getWidth() || marciano.getX()<-2){
                     for(int j = 0; j < enemigo.size(); j++){
                         Enemigo alien = enemigo.get(j);
@@ -260,6 +265,7 @@ private int Win;//to keep score of destroyed bricks
                }
                if(marciano.intersecta(laser)){
                   Assets.alienExplosion.play();
+                  
                   marciano.changeAlive(); 
                   laser.destroy();
                   laser.canShoot();
@@ -331,7 +337,7 @@ private int Win;//to keep score of destroyed bricks
                  state=5;
                  player.setSpeed(0);
                  laser.cantShoot(); 
-                 
+                
              }
              //sets our win condition
              if(getTotalAlien() == getWin()){
@@ -346,10 +352,8 @@ private int Win;//to keep score of destroyed bricks
                     //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
                     setScore(0);
                     setNum("Score:"+score);
-                    for(int w = 0; w<enemigo.size();w++){
-                        Enemigo Area51 = enemigo.get(w);
-                        Area51.setAlive(false);
-                    }
+                    enemigo.clear();
+                    bomb.clear();
                     player.setX(getWidth()/2-48);
                     player.setY(getHeight()-60);
                     player.setLives(3);
@@ -366,38 +370,7 @@ private int Win;//to keep score of destroyed bricks
                  setTotalAlien(getTotalAlien()+1);
                  bomb.add( new Bomb(100,getHeight()+100,8,16,this)); 
             } 
-        }
-        
-                   //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
-                   saveGame();
-                   
-                
-                /*
-                if(state == 5){// || state == 5){//if win or game over
-
-                    state = 1;
-                    for(int iY = 0; iY<enemigo.size();iY++){
-                       Enemigo Alf = enemigo.get(iY);
-                       Alf.reset();
-                    }
-
-                    //si el juego se reinicia se actualizan las variables a como estaban en un principio en init
-                    setScore(0);
-                    setNum("Score:"+score);
-
-                    player.setX(320);
-                    player.setY(getHeight()-100);
-                    player.setLives(3);
-                    player.setSpeed(4);
-                    Assets.song.play();
-                    laser.setX(0); 
-                    laser.setY(0);
-        
-                   //Si se reinicia el juego el anterior juego guardado se elimina y se guarda uno nuevo desde el inicio
-                   saveGame();
-                   
-                }*/
-                
+        }        
              }
     }
     }
@@ -426,7 +399,7 @@ private void render() {
         for (int i = 0; i < enemigo.size(); i++) {
             Enemigo ET =  enemigo.get(i);
             ET.render(g);
-            
+            //to display the score when alien dies
             if(ET.getTime()>0&&!ET.isAlive()&&state==1){
                g.setColor(Color.WHITE);
                g.drawString("+100", ET.getX(), ET.getY()); 
@@ -450,7 +423,6 @@ private void render() {
                Assets.song.stop();
                setPausa(true);
         }
-        
         //draw score
         g.setColor(Color.WHITE);
         g.drawString(num, 700, 20);
@@ -533,23 +505,21 @@ public void run() {
    //se crea un archivo en donde se guardan diferentes variables del juego en curso para asi guardar una partida
    //con la letra "G" 
    private void saveGame(){
-    try{
-    FileWriter fw = new FileWriter("save.txt");
-    
-    fw.write(String.valueOf(player.getX())+ "\n");   
-    fw.write(String.valueOf(player.getY())+ "\n");
-    fw.write(String.valueOf(player.getLives())+ "\n");
+        try{
+            FileWriter fw = new FileWriter("save.txt");
 
-    
-    fw.write(String.valueOf(getScore())+ "\n");
-    
-    fw.write(String.valueOf(laser.getX())+ "\n");
-    fw.write(String.valueOf(laser.getY())+ "\n");
-    fw.write(String.valueOf(laser.getDirection())+ "\n");
-    fw.write(String.valueOf(laser.getSpeed())+ "\n");
-    
-    fw.write(String.valueOf(getWin())+"\n");
+            fw.write(String.valueOf(player.getX())+ "\n");   
+            fw.write(String.valueOf(player.getY())+ "\n");
+            fw.write(String.valueOf(player.getLives())+ "\n");
 
+            fw.write(String.valueOf(laser.getX())+ "\n");
+            fw.write(String.valueOf(laser.getY())+ "\n");
+            fw.write(String.valueOf(laser.getSpeed())+ "\n");
+
+            fw.write(String.valueOf(getScore())+ "\n");
+            fw.write(String.valueOf(getWin())+"\n");
+            fw.write(String.valueOf(getTotalAlien())+"\n");
+            
             for(int i = 0; i < enemigo.size(); i++){
                  Enemigo marciano =  enemigo.get(i);
                  Bomb beam = bomb.get(i);
@@ -557,21 +527,18 @@ public void run() {
                      fw.write(String.valueOf(marciano.getY())+"\n");
                      fw.write(String.valueOf(marciano.isShowpoints())+"\n");
                      fw.write(String.valueOf(marciano.isAlive())+"\n");
+                     fw.write(String.valueOf(marciano.getTime())+"\n");
                      
                      fw.write(String.valueOf(beam.getX())+"\n");
                      fw.write(String.valueOf(beam.getY())+"\n");
-  
-                    
-            }
-
-    //Se cierra el archivo
-            fw.close();
+                     fw.write(String.valueOf(beam.isActive())+"\n");
+                }//Se cierra el archivo
+                    fw.close();
+            }//si hay alguna excepcion o error
+        catch (IOException ex){
+            ex.printStackTrace();
         }
-    //si hay alguna excepcion o error
-    catch (IOException ex){
-        ex.printStackTrace();
     }
-      }
     
     //Sirve para leer un archivo  
    //en este caso el archivo que se guardo anteriormente con el metodo "save"
@@ -585,16 +552,13 @@ public void run() {
         player.setY(Integer.parseInt(br.readLine()));
         player.setLives(Integer.parseInt(br.readLine()));
 
-        
-        setScore(Integer.parseInt(br.readLine()));
-        
         laser.setX(Integer.parseInt(br.readLine()));
         laser.setY(Integer.parseInt(br.readLine()));
-        laser.setDirection(Integer.parseInt(br.readLine()));
         laser.setSpeed(Integer.parseInt(br.readLine()));
         
-
+        setScore(Integer.parseInt(br.readLine()));
         setWin(Integer.parseInt(br.readLine()));
+        setTotalAlien(Integer.parseInt(br.readLine()));
         
         //Bricks
             for(int i = 0; i < enemigo.size(); i++){
@@ -604,9 +568,11 @@ public void run() {
                      marciano.setY(Integer.parseInt(br.readLine()));
                      marciano.setShowpoints(Boolean.parseBoolean(br.readLine()));
                      marciano.setAlive(Boolean.parseBoolean(br.readLine()));
+                     marciano.setTime(Integer.parseInt(br.readLine()));
                      
+                     beam.setX(Integer.parseInt(br.readLine()));
                      beam.setY(Integer.parseInt(br.readLine()));
-                     beam.setY(Integer.parseInt(br.readLine()));
+                     beam.setActive(Boolean.parseBoolean(br.readLine()));
  
             }
         br.close();
@@ -614,6 +580,11 @@ public void run() {
         catch (IOException ex){
             ex.printStackTrace();
         }
+    }
+    public static void sleep(int time){
+        try{
+            Thread.sleep(time);
+        }catch(Exception e){}
     }
 } 
    

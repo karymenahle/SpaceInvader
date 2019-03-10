@@ -22,7 +22,6 @@ public class Laser extends Item{
     private int height;
     private Game game;
     private int speed;
-    private int direction;
     private boolean shooting;
     
     public Laser(int x, int y, int direction, int width, int height, Game game) {
@@ -30,7 +29,6 @@ public class Laser extends Item{
         this.width = width;
         this.height = height;
         this.game = game;
-        this.direction = 4;
         this.speed = 10;
         this.shooting = true;
     }
@@ -52,10 +50,6 @@ public class Laser extends Item{
     public void setSpeed(int speed) {
         this.speed = speed;
     }
-
-    public int getDirection() {
-        return direction;
-    }
   
     public int getWidth() {
         return width;
@@ -65,9 +59,6 @@ public class Laser extends Item{
         return height;
     }
     
-    public void setDirection(int direction) {
-       this.direction = direction;
-    }
 
 
     public void setWidth(int width) {
@@ -88,20 +79,9 @@ public class Laser extends Item{
     @Override
     public void tick() {
           //Si se presiona space empieza el juego
-          
-              if (game.isPausa() == false){
-        //Solo se mueve a la derecha o a la izquierda 
-          
-                   
+              if (!game.isPausa()){
+        //Solo se mueve a la derecha o a la izquierda         
                    setY(getY() - this.getSpeed()); 
-                
-              
-          
-              
-        
-          
-          
-         
           //reset x if colision
 // reset x position and y position if colision
  

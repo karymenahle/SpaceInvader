@@ -23,6 +23,7 @@ public class KeyManager implements KeyListener {
     public boolean save; //para guardar el juego en un archivo 
     public boolean load; //para cargar el juego de un archivo
     public boolean shoot;
+    private int press;
     
     private boolean keys[]; //para guardar los movimientos
     
@@ -38,6 +39,7 @@ public class KeyManager implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
        //set true to every key pressed
+    
     keys[e.getKeyCode()] = true;
     }
 
@@ -45,8 +47,14 @@ public class KeyManager implements KeyListener {
     public void keyReleased(KeyEvent e) {
        //set false to every key released
    keys[e.getKeyCode()] = false;
+   press = e.getKeyCode();
     }
-    
+    public boolean isP() {
+	return keys[KeyEvent.VK_P];
+    }
+//    public void Cambiar(){
+//       keys[press] = false;
+//   }
     public void tick(){
         
        // to enable o disable every key 
